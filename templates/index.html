@@ -6,7 +6,7 @@
     <title>AI Data Insight Builder</title>
     <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="/static/style.css?v=7">
+    <link rel="stylesheet" href="/static/style.css?v=8">
 
     <!-- PWA 설정 (Progressive Web App) -->
     <link rel="manifest" href="/manifest.json">
@@ -21,31 +21,40 @@
 <body>
     <!-- 사이트 비밀번호 잠금화면 오버레이 (비밀번호: 7890) -->
     <div id="authLockOverlay" class="auth-lock-overlay">
+        <!-- 🎆 웅장한 잠금해제 캔버스 이펙트 (네온 파티클 폭발, EMP 충격파 링) -->
+        <canvas id="unlockEffectCanvas" class="unlock-effect-canvas"></canvas>
+        <div id="unlockFlash" class="unlock-flash"></div>
+
         <div class="lock-card" id="lockCard">
-            <!-- 잠금해제 애니메이션용 물리적 SVG 자물쇠 -->
+            <!-- 잠금해제 애니메이션용 물리적 SVG 자물쇠 & 멀티 쇼크웨이브 -->
             <div class="lock-icon-container" id="lockIconContainer">
+                <div class="lock-shockwave-ring ring-1"></div>
+                <div class="lock-shockwave-ring ring-2"></div>
+                <div class="lock-shockwave-ring ring-3"></div>
                 <div class="lock-ripple" id="lockRipple"></div>
-                <svg class="lock-svg" viewBox="0 0 64 64" width="76" height="76">
+                <svg id="lockSvg" class="lock-svg" viewBox="0 0 64 64" width="76" height="76">
                     <defs>
                         <linearGradient id="lockBodyGrad" x1="0" y1="0" x2="1" y2="1">
-                            <stop offset="0%" stop-color="#3b82f6"/>
-                            <stop offset="100%" stop-color="#1d4ed8"/>
+                            <stop offset="0%" stop-color="#00f0ff"/>
+                            <stop offset="100%" stop-color="#0284c7"/>
                         </linearGradient>
                         <linearGradient id="lockSuccessGrad" x1="0" y1="0" x2="1" y2="1">
-                            <stop offset="0%" stop-color="#10b981"/>
+                            <stop offset="0%" stop-color="#00ff9d"/>
+                            <stop offset="50%" stop-color="#00f0ff"/>
                             <stop offset="100%" stop-color="#059669"/>
                         </linearGradient>
                     </defs>
                     <!-- 자물쇠 고리 (Shackle) -->
-                    <path id="lockShackle" class="lock-shackle" d="M23 28 V19 A9 9 0 0 1 41 19 V28" fill="none" stroke="#93c5fd" stroke-width="5" stroke-linecap="round"/>
+                    <path id="lockShackle" class="lock-shackle" d="M23 28 V19 A9 9 0 0 1 41 19 V28" fill="none" stroke="#38bdf8" stroke-width="5" stroke-linecap="round"/>
                     <!-- 자물쇠 몸체 -->
-                    <rect id="lockBody" x="14" y="27" width="36" height="29" rx="7" fill="url(#lockBodyGrad)" stroke="#60a5fa" stroke-width="1.5"/>
+                    <rect id="lockBody" x="14" y="27" width="36" height="29" rx="7" fill="url(#lockBodyGrad)" stroke="#00f0ff" stroke-width="1.5"/>
                     <!-- 열쇠구멍 -->
-                    <circle cx="32" cy="39" r="3.2" fill="#0f172a"/>
-                    <polygon points="30,41 34,41 33.2,48 30.8,48" fill="#0f172a"/>
+                    <circle cx="32" cy="39" r="3.2" fill="#060913"/>
+                    <polygon points="30,41 34,41 33.2,48 30.8,48" fill="#060913"/>
                 </svg>
             </div>
 
+            <div class="lock-hud-badge" id="lockHudBadge">SYSTEM SECURITY PROTOCOL</div>
             <h2 class="lock-title" id="lockTitle">보안 잠금 해제</h2>
             <p class="lock-subtitle" id="lockSubtitle">사이트에 접속하려면 4자리 비밀번호를 입력해 주세요.</p>
 
@@ -62,6 +71,148 @@
     </div>
 
     <script>
+        // ==========================================
+        // 🎆 Cyberpunk Spectacular Unlock FX Engine (Canvas Particles & EMP Waves)
+        // ==========================================
+        class CyberUnlockFX {
+            constructor(canvas) {
+                this.canvas = canvas;
+                this.ctx = canvas.getContext('2d');
+                this.particles = [];
+                this.shockwaves = [];
+                this.animId = null;
+                this.resize();
+                window.addEventListener('resize', () => this.resize());
+            }
+
+            resize() {
+                this.w = this.canvas.width = window.innerWidth;
+                this.h = this.canvas.height = window.innerHeight;
+            }
+
+            blast(originX, originY) {
+                this.resize();
+                this.particles = [];
+                this.shockwaves = [];
+
+                // 1. Concentric EMP Shockwave Laser Rings (4 Waves)
+                const waveColors = ['#00f0ff', '#ff007f', '#00ff9d', '#ffffff'];
+                for (let i = 0; i < 4; i++) {
+                    this.shockwaves.push({
+                        x: originX,
+                        y: originY,
+                        radius: 12 + i * 16,
+                        maxRadius: Math.max(this.w, this.h) * 0.95,
+                        speed: 15 + i * 7,
+                        lineWidth: 6 - i * 1.1,
+                        color: waveColors[i % waveColors.length],
+                        alpha: 1,
+                        decay: 0.02 - i * 0.003
+                    });
+                }
+
+                // 2. High-energy Neon Sparks & Shards (120 particles)
+                const colors = ['#00f0ff', '#38bdf8', '#ff007f', '#ff70a6', '#00ff9d', '#fcee0a', '#ffffff'];
+                for (let i = 0; i < 120; i++) {
+                    const angle = Math.random() * Math.PI * 2;
+                    const speed = 4 + Math.random() * 24;
+                    this.particles.push({
+                        x: originX,
+                        y: originY,
+                        vx: Math.cos(angle) * speed,
+                        vy: Math.sin(angle) * speed,
+                        size: 2.5 + Math.random() * 5.5,
+                        color: colors[Math.floor(Math.random() * colors.length)],
+                        alpha: 1,
+                        decay: 0.012 + Math.random() * 0.018,
+                        friction: 0.965,
+                        gravity: 0.22,
+                        rotation: Math.random() * Math.PI * 2,
+                        rotSpeed: (Math.random() - 0.5) * 0.35,
+                        type: Math.random() > 0.4 ? 'spark' : (Math.random() > 0.5 ? 'diamond' : 'streak')
+                    });
+                }
+
+                if (this.animId) cancelAnimationFrame(this.animId);
+
+                const render = () => {
+                    this.ctx.clearRect(0, 0, this.w, this.h);
+
+                    // Render Shockwaves
+                    for (let i = this.shockwaves.length - 1; i >= 0; i--) {
+                        const sw = this.shockwaves[i];
+                        sw.radius += sw.speed;
+                        sw.alpha -= sw.decay;
+
+                        if (sw.alpha <= 0 || sw.radius >= sw.maxRadius) {
+                            this.shockwaves.splice(i, 1);
+                            continue;
+                        }
+
+                        this.ctx.save();
+                        this.ctx.beginPath();
+                        this.ctx.arc(sw.x, sw.y, sw.radius, 0, Math.PI * 2);
+                        this.ctx.strokeStyle = sw.color;
+                        this.ctx.globalAlpha = Math.max(0, sw.alpha);
+                        this.ctx.lineWidth = sw.lineWidth;
+                        this.ctx.shadowBlur = 24;
+                        this.ctx.shadowColor = sw.color;
+                        this.ctx.stroke();
+                        this.ctx.restore();
+                    }
+
+                    // Render Particles
+                    for (let i = this.particles.length - 1; i >= 0; i--) {
+                        const p = this.particles[i];
+                        p.x += p.vx;
+                        p.y += p.vy;
+                        p.vx *= p.friction;
+                        p.vy = p.vy * p.friction + p.gravity;
+                        p.rotation += p.rotSpeed;
+                        p.alpha -= p.decay;
+
+                        if (p.alpha <= 0) {
+                            this.particles.splice(i, 1);
+                            continue;
+                        }
+
+                        this.ctx.save();
+                        this.ctx.translate(p.x, p.y);
+                        this.ctx.rotate(p.rotation);
+                        this.ctx.globalAlpha = Math.max(0, p.alpha);
+                        this.ctx.fillStyle = p.color;
+                        this.ctx.shadowBlur = 16;
+                        this.ctx.shadowColor = p.color;
+
+                        if (p.type === 'diamond') {
+                            this.ctx.beginPath();
+                            this.ctx.moveTo(0, -p.size * 1.5);
+                            this.ctx.lineTo(p.size, 0);
+                            this.ctx.lineTo(0, p.size * 1.5);
+                            this.ctx.lineTo(-p.size, 0);
+                            this.ctx.closePath();
+                            this.ctx.fill();
+                        } else if (p.type === 'streak') {
+                            this.ctx.fillRect(-p.size * 2, -p.size * 0.5, p.size * 4, p.size);
+                        } else {
+                            this.ctx.beginPath();
+                            this.ctx.arc(0, 0, p.size, 0, Math.PI * 2);
+                            this.ctx.fill();
+                        }
+                        this.ctx.restore();
+                    }
+
+                    if (this.particles.length > 0 || this.shockwaves.length > 0) {
+                        this.animId = requestAnimationFrame(render);
+                    } else {
+                        this.ctx.clearRect(0, 0, this.w, this.h);
+                    }
+                };
+
+                this.animId = requestAnimationFrame(render);
+            }
+        }
+
         (function() {
             const overlay = document.getElementById('authLockOverlay');
             const form = document.getElementById('lockForm');
@@ -69,13 +220,19 @@
             const card = document.getElementById('lockCard');
             const shackle = document.getElementById('lockShackle');
             const lockBody = document.getElementById('lockBody');
+            const lockSvg = document.getElementById('lockSvg');
             const ripple = document.getElementById('lockRipple');
+            const rings = document.querySelectorAll('.lock-shockwave-ring');
+            const hudBadge = document.getElementById('lockHudBadge');
+            const flashEl = document.getElementById('unlockFlash');
+            const fxCanvas = document.getElementById('unlockEffectCanvas');
             const errorMsg = document.getElementById('lockErrorMsg');
             const btnText = document.getElementById('btnUnlockText');
             const title = document.getElementById('lockTitle');
             const subtitle = document.getElementById('lockSubtitle');
 
             const SECRET_PIN = "7890";
+            const unlockFX = new CyberUnlockFX(fxCanvas);
 
             // 세션 동안 잠금 해제 상태 유지
             if (sessionStorage.getItem('site_unlocked_7890') === 'true') {
@@ -91,38 +248,69 @@
                     errorMsg.classList.add('hidden');
                     input.blur();
 
-                    // 1. 잠금 해제 애니메이션 가동!
+                    // 1. 자물쇠 중심 좌표 측정 (파티클 & 충격파 폭발 진원지)
+                    const lockRect = lockSvg.getBoundingClientRect();
+                    const originX = lockRect.left + lockRect.width / 2;
+                    const originY = lockRect.top + lockRect.height / 2;
+
+                    // 2. ⚡ 순간 퀀텀 에너지 스크린 플래시 방출!
+                    flashEl.classList.remove('flash-active');
+                    void flashEl.offsetWidth;
+                    flashEl.classList.add('flash-active');
+
+                    // 3. 🎆 120개 고에너지 네온 파티클 & 다중 EMP 레이저 충격파 대폭발!
+                    unlockFX.blast(originX, originY);
+
+                    // 4. 자물쇠 물리적 변형 & 네온 아우라 만개
                     shackle.classList.add('shackle-open');
+                    lockSvg.classList.add('svg-unlocked');
                     lockBody.setAttribute('fill', 'url(#lockSuccessGrad)');
                     ripple.classList.add('ripple-active');
+                    rings.forEach(r => {
+                        r.classList.remove('wave-active');
+                        void r.offsetWidth;
+                        r.classList.add('wave-active');
+                    });
 
-                    // 2. 텍스트 & 상태 전환
-                    title.textContent = '✨ 잠금 해제 성공!';
-                    title.style.color = '#34d399';
-                    subtitle.textContent = '인증이 완료되었습니다. 대시보드로 이동합니다.';
-                    btnText.textContent = '✅ 접속 중...';
+                    // 5. HUD 상태 배지 & 타이틀 웅장한 사이버펑크 전환
+                    hudBadge.textContent = '⚡ ACCESS GRANTED 100%';
+                    hudBadge.classList.add('granted');
+                    title.textContent = '⚡ ACCESS GRANTED // 해제 성공';
+                    title.style.color = '#00ff9d';
+                    title.style.textShadow = '0 0 24px rgba(0, 255, 157, 0.8), 0 0 10px #00f0ff';
+                    subtitle.textContent = '[DECRYPTED 100% // ALL PROTOCOLS ONLINE]';
+                    subtitle.style.color = '#38bdf8';
+                    subtitle.style.textShadow = '0 0 12px rgba(56, 189, 248, 0.5)';
+                    btnText.textContent = '🚀 대시보드 시스템 접속 중...';
 
-                    card.classList.add('card-unlocked');
+                    card.classList.add('card-unlocked-epic');
 
-                    // 3. 부드러운 오버레이 페이드아웃 퇴장
+                    // 6. 워프 스케일 페이드아웃 (시네마틱 퇴장)
                     setTimeout(() => {
-                        overlay.classList.add('overlay-fadeout');
+                        overlay.classList.add('overlay-fadeout-epic');
                         sessionStorage.setItem('site_unlocked_7890', 'true');
                         setTimeout(() => {
                             overlay.style.display = 'none';
-                            overlay.classList.remove('overlay-fadeout');
+                            overlay.classList.remove('overlay-fadeout-epic');
                             // 리셋
                             shackle.classList.remove('shackle-open');
+                            lockSvg.classList.remove('svg-unlocked');
                             ripple.classList.remove('ripple-active');
-                            card.classList.remove('card-unlocked');
+                            rings.forEach(r => r.classList.remove('wave-active'));
+                            card.classList.remove('card-unlocked-epic');
+                            hudBadge.classList.remove('granted');
+                            hudBadge.textContent = 'SYSTEM SECURITY PROTOCOL';
                             lockBody.setAttribute('fill', 'url(#lockBodyGrad)');
                             title.textContent = '보안 잠금 해제';
                             title.style.color = '#ffffff';
+                            title.style.textShadow = '';
                             subtitle.textContent = '사이트에 접속하려면 4자리 비밀번호를 입력해 주세요.';
+                            subtitle.style.color = '';
+                            subtitle.style.textShadow = '';
                             btnText.textContent = '🔓 잠금 해제';
                             input.value = '';
-                        }, 650);
-                    }, 550);
+                        }, 800);
+                    }, 850);
 
                 } else {
                     // 비밀번호 불일치: 카드 진동(Shake) & 오류 메시지
