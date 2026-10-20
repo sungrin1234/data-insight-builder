@@ -6,11 +6,11 @@
     <title>AI Data Insight Builder</title>
     <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="/static/style.css?v=3">
+    <link rel="stylesheet" href="/static/style.css?v=5">
 
     <!-- PWA 설정 (Progressive Web App) -->
     <link rel="manifest" href="/manifest.json">
-    <meta name="theme-color" content="#1e293b">
+    <meta name="theme-color" content="#060913">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -1015,6 +1015,39 @@
                     btnInstall.classList.remove('pulse');
                     btnInstall.disabled = true;
                 }
+            });
+        })();
+
+        // ==========================================
+        // ⚡ Cyberpunk Button Click Ripple & Spring Animation
+        // ==========================================
+        (function() {
+            document.addEventListener('pointerdown', function(e) {
+                const btn = e.target.closest('button, .btn, .quick-btn, .quick-viz-btn, .suggestion-card, .btn-pwa-confirm, .autumn-switch, .mode-toggle label');
+                if (!btn) return;
+
+                // 1. Organic Spring Scale
+                btn.style.transition = 'transform 0.12s cubic-bezier(0.34, 1.56, 0.64, 1)';
+                btn.style.transform = 'scale(0.95) translateY(1px)';
+
+                // 2. Neon Ripple Wave Expansion
+                const rect = btn.getBoundingClientRect();
+                const ripple = document.createElement('span');
+                ripple.className = 'cyber-ripple-wave';
+                const size = Math.max(rect.width, rect.height) * 2.2;
+                ripple.style.width = ripple.style.height = `${size}px`;
+                ripple.style.left = `${e.clientX - rect.left - size / 2}px`;
+                ripple.style.top = `${e.clientY - rect.top - size / 2}px`;
+                btn.appendChild(ripple);
+
+                const cleanup = () => {
+                    btn.style.transform = '';
+                    setTimeout(() => ripple.remove(), 550);
+                    window.removeEventListener('pointerup', cleanup);
+                    window.removeEventListener('pointercancel', cleanup);
+                };
+                window.addEventListener('pointerup', cleanup);
+                window.addEventListener('pointercancel', cleanup);
             });
         })();
     </script>

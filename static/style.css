@@ -1,20 +1,55 @@
-/* AI Data Insight Builder - Modern Clean Stylesheet */
+/* ==========================================================================
+ * ⚡ AI Data Insight Builder - Cyberpunk 2077 / Neo-Tokyo Futuristic Theme
+ * ========================================================================== */
+
 :root {
-    --primary: #2563eb;
-    --primary-hover: #1d4ed8;
-    --primary-light: #eff6ff;
-    --success: #10b981;
-    --warning: #f59e0b;
-    --warning-bg: #fffbeb;
-    --danger: #ef4444;
-    --danger-bg: #fef2f2;
-    --bg-main: #f8fafc;
-    --bg-card: #ffffff;
-    --border: #e2e8f0;
-    --text-main: #0f172a;
-    --text-muted: #64748b;
-    --radius: 10px;
-    --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    /* 🎨 Cyberpunk Neon Palette */
+    --neon-cyan: #00f0ff;
+    --neon-cyan-glow: rgba(0, 240, 255, 0.45);
+    --neon-cyan-bg: rgba(0, 240, 255, 0.1);
+
+    --neon-pink: #ff007f;
+    --neon-pink-glow: rgba(255, 0, 127, 0.45);
+    --neon-pink-bg: rgba(255, 0, 127, 0.1);
+
+    --neon-purple: #a855f7;
+    --neon-purple-glow: rgba(168, 85, 247, 0.4);
+
+    --neon-yellow: #fcee0a;
+    --neon-yellow-glow: rgba(252, 238, 10, 0.4);
+
+    --neon-green: #00ff9d;
+    --neon-green-glow: rgba(0, 255, 157, 0.4);
+
+    /* 🌌 Background & Surface Layers */
+    --bg-main: #060913;
+    --bg-surface: rgba(12, 19, 36, 0.85);
+    --bg-surface-hover: rgba(16, 26, 48, 0.95);
+    --bg-card: rgba(13, 20, 38, 0.82);
+
+    /* 🔲 Borders & Glows */
+    --border: rgba(0, 240, 255, 0.2);
+    --border-bright: rgba(0, 240, 255, 0.55);
+    --border-pink: rgba(255, 0, 127, 0.4);
+
+    /* 📝 High-contrast Tech Typography */
+    --text-main: #f1f5f9;
+    --text-muted: #94a3b8;
+    --text-cyan: #38bdf8;
+
+    /* 📐 Layout Constants */
+    --radius: 12px;
+    --shadow: 0 10px 35px -5px rgba(0, 0, 0, 0.7), 0 0 15px rgba(0, 240, 255, 0.08);
+
+    /* Semantic Aliases */
+    --primary: var(--neon-cyan);
+    --primary-hover: #38bdf8;
+    --primary-light: var(--neon-cyan-bg);
+    --success: var(--neon-green);
+    --warning: var(--neon-yellow);
+    --warning-bg: rgba(252, 238, 10, 0.09);
+    --danger: var(--neon-pink);
+    --danger-bg: var(--neon-pink-bg);
 }
 
 * {
@@ -26,17 +61,102 @@
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     background-color: var(--bg-main);
+    background-image: 
+        radial-gradient(circle at 10% 15%, rgba(0, 240, 255, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 90% 25%, rgba(255, 0, 127, 0.07) 0%, transparent 45%),
+        linear-gradient(rgba(0, 240, 255, 0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 240, 255, 0.025) 1px, transparent 1px);
+    background-size: 100% 100%, 100% 100%, 36px 36px, 36px 36px;
+    background-attachment: fixed;
     color: var(--text-main);
     line-height: 1.6;
     padding-bottom: 60px;
+    min-height: 100vh;
 }
 
-/* Header */
+/* ==========================================================================
+ * 💫 Natural Interactive Button & Click Animation Engine
+ * ========================================================================== */
+
+/* All clickable elements share spring-like responsive physics */
+button, 
+.btn, 
+.quick-btn, 
+.quick-viz-btn, 
+.suggestion-card,
+.btn-install-app, 
+.btn-relock, 
+.btn-unlock,
+.btn-pwa-confirm,
+.autumn-switch {
+    position: relative;
+    overflow: hidden;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1), 
+                box-shadow 0.22s cubic-bezier(0.34, 1.56, 0.64, 1), 
+                background 0.2s ease, 
+                border-color 0.2s ease,
+                color 0.2s ease;
+}
+
+/* Natural Spring Click / Active State */
+button:active, 
+.btn:active, 
+.quick-btn:active, 
+.quick-viz-btn:active, 
+.btn-install-app:active, 
+.btn-relock:active, 
+.btn-unlock:active,
+.btn-pwa-confirm:active {
+    transform: scale(0.95) translateY(1px) !important;
+    filter: brightness(1.15);
+}
+
+/* Dynamic Glowing Ripple Wave (Appended on Click) */
+.cyber-ripple-wave {
+    position: absolute;
+    border-radius: 50%;
+    transform: scale(0);
+    animation: cyberRippleExp 0.55s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+    background: radial-gradient(circle, rgba(0, 240, 255, 0.65) 0%, rgba(255, 0, 127, 0.35) 60%, rgba(0, 240, 255, 0) 100%);
+    pointer-events: none;
+    z-index: 99;
+}
+
+@keyframes cyberRippleExp {
+    0% {
+        transform: scale(0);
+        opacity: 0.95;
+    }
+    100% {
+        transform: scale(2.8);
+        opacity: 0;
+    }
+}
+
+/* ==========================================================================
+ * 🎛️ Header (Cyber Deck HUD Bar)
+ * ========================================================================== */
 .header {
-    background: linear-gradient(135deg, #1e293b, #0f172a);
+    background: linear-gradient(180deg, rgba(10, 16, 32, 0.96) 0%, rgba(6, 9, 19, 0.98) 100%);
+    border-bottom: 1px solid rgba(0, 240, 255, 0.28);
+    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.7), 0 1px 15px rgba(0, 240, 255, 0.15);
     color: #ffffff;
-    padding: 24px 20px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    padding: 22px 20px;
+    position: relative;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+}
+
+.header::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #00f0ff 25%, #ff007f 75%, transparent);
 }
 
 .header-container {
@@ -50,152 +170,339 @@ body {
 }
 
 .header h1 {
-    font-size: 1.6rem;
-    font-weight: 700;
+    font-size: 1.65rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    background: linear-gradient(135deg, #ffffff 25%, #00f0ff 70%, #ff007f 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: inline-block;
+    filter: drop-shadow(0 0 16px rgba(0, 240, 255, 0.35));
 }
 
 .subtitle {
-    font-size: 0.9rem;
-    color: #94a3b8;
+    font-size: 0.88rem;
+    color: #7dd3fc;
+    letter-spacing: 0.4px;
+    text-shadow: 0 0 10px rgba(0, 240, 255, 0.25);
 }
 
+.header-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* 📲 Header PWA Install Button */
+.btn-install-app {
+    background: linear-gradient(135deg, #00f0ff 0%, #0284c7 100%);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    color: #040814;
+    padding: 7px 15px;
+    border-radius: 20px;
+    font-size: 0.82rem;
+    font-weight: 800;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 0 16px rgba(0, 240, 255, 0.4);
+}
+
+.btn-install-app:hover {
+    background: linear-gradient(135deg, #38bdf8 0%, #00f0ff 100%);
+    box-shadow: 0 0 24px rgba(0, 240, 255, 0.65), 0 0 10px #00f0ff;
+    transform: translateY(-2px);
+}
+
+.btn-install-app.pulse {
+    animation: pwaNeonPulse 2s infinite;
+}
+
+@keyframes pwaNeonPulse {
+    0% { box-shadow: 0 0 0 0 rgba(0, 240, 255, 0.8); }
+    70% { box-shadow: 0 0 0 12px rgba(0, 240, 255, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(0, 240, 255, 0); }
+}
+
+/* 🔒 Header Re-lock Button */
+.btn-relock {
+    background: rgba(255, 0, 127, 0.12);
+    border: 1px solid rgba(255, 0, 127, 0.4);
+    color: #ff70a6;
+    padding: 7px 14px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.btn-relock:hover {
+    background: rgba(255, 0, 127, 0.25);
+    color: #ffffff;
+    border-color: #ff007f;
+    box-shadow: 0 0 18px rgba(255, 0, 127, 0.45);
+    transform: translateY(-2px);
+}
+
+/* 🟢 Health Status Badge */
 .health-badge {
     padding: 6px 14px;
     border-radius: 20px;
-    font-size: 0.82rem;
-    font-weight: 600;
-    background-color: #334155;
+    font-size: 0.8rem;
+    font-weight: 700;
+    background-color: rgba(15, 23, 42, 0.85);
+    border: 1px solid rgba(148, 163, 184, 0.25);
     color: #cbd5e1;
+    backdrop-filter: blur(8px);
 }
 
 .health-badge.ok {
-    background-color: #065f46;
-    color: #a7f3d0;
+    background-color: rgba(0, 255, 157, 0.12);
+    border: 1px solid rgba(0, 255, 157, 0.45);
+    color: #00ff9d;
+    box-shadow: 0 0 14px rgba(0, 255, 157, 0.25);
 }
 
 .health-badge.warn {
-    background-color: #92400e;
-    color: #fde68a;
+    background-color: rgba(252, 238, 10, 0.12);
+    border: 1px solid rgba(252, 238, 10, 0.45);
+    color: #fcee0a;
+    box-shadow: 0 0 14px rgba(252, 238, 10, 0.25);
 }
 
-/* Main Container */
+/* ==========================================================================
+ * 🍂 Autumn Toggle Switch (Cyberpunk Autumn Fusion)
+ * ========================================================================== */
+.autumn-switch {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.autumn-switch input {
+    display: none;
+}
+
+.autumn-slider {
+    position: relative;
+    width: 44px;
+    height: 24px;
+    background-color: rgba(15, 23, 42, 0.9);
+    border: 1px solid rgba(0, 240, 255, 0.3);
+    border-radius: 20px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: inset 0 1px 4px rgba(0,0,0,0.5);
+}
+
+.autumn-icon {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 18px;
+    height: 18px;
+    background: #0f172a;
+    border: 1px solid rgba(0, 240, 255, 0.4);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.autumn-switch input:checked + .autumn-slider {
+    background: linear-gradient(135deg, #ea580c, #b45309);
+    border-color: #f97316;
+    box-shadow: 0 0 12px rgba(234, 88, 12, 0.4);
+}
+
+.autumn-switch input:checked + .autumn-slider .autumn-icon {
+    transform: translateX(20px);
+    background: #fff7ed;
+    border-color: #ea580c;
+}
+
+/* ==========================================================================
+ * 📦 Main Container & Futuristic Cards
+ * ========================================================================== */
 .main-container {
     max-width: 1100px;
-    margin: 24px auto;
+    margin: 28px auto;
     padding: 0 20px;
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 26px;
 }
 
-/* Banner */
+/* Notice Banner */
 .notice-banner {
-    background-color: #f1f5f9;
-    border-left: 4px solid #64748b;
-    padding: 12px 16px;
+    background: rgba(10, 20, 38, 0.8);
+    border: 1px solid rgba(0, 240, 255, 0.25);
+    border-left: 4px solid var(--neon-cyan);
+    padding: 14px 18px;
     font-size: 0.88rem;
-    color: #334155;
-    border-radius: 6px;
+    color: #bae6fd;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(0, 240, 255, 0.08);
 }
 
-/* Card */
+/* Cyber Glass Card */
 .card {
-    background-color: var(--bg-card);
+    background: var(--bg-card);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 24px;
+    padding: 28px;
     box-shadow: var(--shadow);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.25s ease;
+}
+
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #00f0ff 30%, #ff007f 70%, transparent);
+    opacity: 0.6;
+}
+
+.card:hover {
+    border-color: var(--border-bright);
+    box-shadow: 0 15px 45px rgba(0, 0, 0, 0.8), 0 0 25px rgba(0, 240, 255, 0.16);
 }
 
 .card h2 {
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: #1e293b;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #ffffff;
     margin-bottom: 8px;
+    letter-spacing: -0.3px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .card .desc {
-    font-size: 0.9rem;
+    font-size: 0.88rem;
     color: var(--text-muted);
-    margin-bottom: 16px;
+    margin-bottom: 20px;
 }
 
 .hidden {
     display: none !important;
 }
 
-/* Upload Section */
+/* ==========================================================================
+ * 🛸 Upload Box (Holographic Scan Zone)
+ * ========================================================================== */
 .upload-box {
-    border: 2px dashed #94a3b8;
+    border: 2px dashed rgba(0, 240, 255, 0.35);
     border-radius: var(--radius);
-    padding: 24px;
+    padding: 34px 24px;
     text-align: center;
-    background-color: #f8fafc;
+    background: rgba(10, 16, 32, 0.65);
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 12px;
+    gap: 14px;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.upload-box:hover {
+    border-color: #00f0ff;
+    background: rgba(0, 240, 255, 0.05);
+    box-shadow: 0 0 30px rgba(0, 240, 255, 0.2), inset 0 0 20px rgba(0, 240, 255, 0.06);
+    transform: translateY(-2px);
 }
 
 #csvFileInput {
     display: block !important;
     opacity: 1 !important;
     position: static !important;
-    font-size: 1rem;
-    padding: 10px 16px;
-    background-color: #ffffff;
-    border: 1px solid #cbd5e1;
-    border-radius: 8px;
+    font-size: 0.95rem;
+    padding: 11px 18px;
+    background-color: rgba(15, 23, 42, 0.9);
+    color: #38bdf8;
+    border: 1px solid rgba(0, 240, 255, 0.35);
+    border-radius: 10px;
     cursor: pointer;
+    transition: all 0.25s ease;
 }
 
-/* Buttons */
+#csvFileInput:hover {
+    border-color: #00f0ff;
+    box-shadow: 0 0 16px rgba(0, 240, 255, 0.35);
+}
+
+/* ==========================================================================
+ * ⚡ Cyber Action Buttons
+ * ========================================================================== */
 .btn {
     display: inline-block;
-    padding: 9px 18px;
-    border-radius: 6px;
-    font-size: 0.9rem;
-    font-weight: 600;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 0.92rem;
+    font-weight: 700;
     cursor: pointer;
     border: none;
-    transition: background 0.2s, transform 0.1s;
     text-decoration: none;
-}
-
-.btn:active {
-    transform: scale(0.98);
+    letter-spacing: 0.3px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
 }
 
 .btn-primary {
-    background-color: var(--primary);
-    color: #ffffff;
+    background: linear-gradient(135deg, #00f0ff 0%, #0284c7 60%, #ff007f 100%);
+    color: #040814;
+    font-weight: 800;
+    box-shadow: 0 4px 20px rgba(0, 240, 255, 0.4);
 }
 
 .btn-primary:hover {
-    background-color: var(--primary-hover);
+    background: linear-gradient(135deg, #38bdf8 0%, #00f0ff 60%, #ff2a85 100%);
+    box-shadow: 0 6px 28px rgba(0, 240, 255, 0.65), 0 0 15px rgba(255, 0, 127, 0.3);
+    transform: translateY(-2px);
 }
 
 .btn-secondary {
-    background-color: #e2e8f0;
-    color: #1e293b;
+    background: rgba(30, 41, 59, 0.85);
+    color: #f1f5f9;
+    border: 1px solid rgba(148, 163, 184, 0.25);
 }
 
 .btn-secondary:hover {
-    background-color: #cbd5e1;
+    background: rgba(51, 65, 85, 0.95);
+    border-color: rgba(0, 240, 255, 0.4);
+    color: #00f0ff;
+    box-shadow: 0 0 16px rgba(0, 240, 255, 0.25);
+    transform: translateY(-2px);
 }
 
 /* Warnings Box */
 .warnings-box {
-    background-color: var(--warning-bg);
-    border: 1px solid #fde68a;
+    background: rgba(252, 238, 10, 0.08);
+    border: 1px solid rgba(252, 238, 10, 0.35);
     border-radius: 8px;
     padding: 14px 18px;
     margin-bottom: 20px;
+    box-shadow: 0 0 15px rgba(252, 238, 10, 0.08);
 }
 
 .warning-item {
     font-size: 0.88rem;
-    color: #92400e;
+    color: #fef08a;
     margin-bottom: 6px;
     display: flex;
     align-items: flex-start;
@@ -206,7 +513,9 @@ body {
     margin-bottom: 0;
 }
 
-/* Metrics Grid */
+/* ==========================================================================
+ * 📊 Metrics Grid
+ * ========================================================================== */
 .metrics-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -215,39 +524,51 @@ body {
 }
 
 .metric-card {
-    background-color: #f8fafc;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 14px;
+    background: rgba(15, 23, 42, 0.7);
+    border: 1px solid rgba(0, 240, 255, 0.15);
+    border-radius: 10px;
+    padding: 16px;
     display: flex;
     flex-direction: column;
     gap: 6px;
+    transition: all 0.25s ease;
+}
+
+.metric-card:hover {
+    border-color: rgba(0, 240, 255, 0.45);
+    box-shadow: 0 0 18px rgba(0, 240, 255, 0.18);
+    transform: translateY(-2px);
 }
 
 .metric-title {
-    font-size: 0.78rem;
-    font-weight: 600;
-    color: var(--text-muted);
+    font-size: 0.76rem;
+    font-weight: 700;
+    color: #64748b;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.8px;
 }
 
 .metric-val {
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: #1e293b;
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #ffffff;
+    font-family: 'SF Pro Display', -apple-system, monospace;
 }
 
 .metric-val.highlight {
-    color: var(--primary);
+    color: #00f0ff;
+    text-shadow: 0 0 14px rgba(0, 240, 255, 0.45);
 }
 
-/* Table */
+/* ==========================================================================
+ * 🗃️ Cyber HUD Data Table
+ * ========================================================================== */
 .table-responsive {
     overflow-x: auto;
-    border: 1px solid var(--border);
-    border-radius: 8px;
+    border: 1px solid rgba(0, 240, 255, 0.22);
+    border-radius: 10px;
     margin-top: 12px;
+    background: rgba(10, 16, 30, 0.85);
 }
 
 .data-table {
@@ -258,24 +579,26 @@ body {
 }
 
 .data-table th, .data-table td {
-    padding: 10px 14px;
-    border-bottom: 1px solid var(--border);
+    padding: 11px 16px;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.12);
     white-space: nowrap;
 }
 
 .data-table th {
-    background-color: #f1f5f9;
-    font-weight: 600;
-    color: #334155;
-    position: sticky;
-    top: 0;
+    background-color: rgba(15, 23, 42, 0.98);
+    font-weight: 700;
+    color: #38bdf8;
+    letter-spacing: 0.3px;
+    border-bottom: 2px solid rgba(0, 240, 255, 0.3);
 }
 
 .data-table tr:hover {
-    background-color: #f8fafc;
+    background-color: rgba(0, 240, 255, 0.06);
 }
 
-/* Suggestion Grid */
+/* ==========================================================================
+ * 💡 Suggestions Grid
+ * ========================================================================== */
 .suggestion-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -284,21 +607,21 @@ body {
 }
 
 .suggestion-card {
-    border: 1px solid #bfdbfe;
-    background-color: #f0f7ff;
-    border-radius: 8px;
+    border: 1px solid rgba(0, 240, 255, 0.25);
+    background: rgba(15, 23, 42, 0.65);
+    border-radius: 12px;
     padding: 18px;
     display: flex;
     flex-direction: column;
     gap: 10px;
-    transition: transform 0.15s, box-shadow 0.15s;
     cursor: pointer;
 }
 
 .suggestion-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(37, 99, 235, 0.1);
-    border-color: var(--primary);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6), 0 0 22px rgba(0, 240, 255, 0.25);
+    border-color: #00f0ff;
+    background: rgba(15, 23, 42, 0.9);
 }
 
 .suggestion-header {
@@ -308,45 +631,50 @@ body {
 }
 
 .suggestion-badge {
-    background-color: var(--primary);
+    background: linear-gradient(135deg, #ff007f 0%, #a855f7 100%);
     color: #ffffff;
     font-size: 0.75rem;
     font-weight: 700;
-    padding: 3px 8px;
-    border-radius: 4px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    box-shadow: 0 0 10px rgba(255, 0, 127, 0.35);
 }
 
 .suggestion-period {
-    font-size: 0.8rem;
-    font-weight: 600;
-    color: #2563eb;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #00f0ff;
+    text-shadow: 0 0 8px rgba(0, 240, 255, 0.3);
 }
 
 .suggestion-why {
-    font-size: 0.88rem;
-    color: #1e293b;
+    font-size: 0.9rem;
+    color: #f1f5f9;
     font-weight: 500;
     line-height: 1.5;
 }
 
 .suggestion-caution {
     font-size: 0.8rem;
-    color: #b45309;
-    background-color: #fef3c7;
+    color: #fde68a;
+    background-color: rgba(245, 158, 11, 0.12);
+    border: 1px solid rgba(245, 158, 11, 0.25);
     padding: 6px 10px;
-    border-radius: 4px;
+    border-radius: 6px;
 }
 
-/* Tool Controls Form */
+/* ==========================================================================
+ * 🛠️ Tool Controls Form & Inputs
+ * ========================================================================== */
 .tool-controls {
     display: flex;
     flex-wrap: wrap;
     gap: 16px;
     align-items: flex-end;
-    background-color: #f8fafc;
-    padding: 20px;
-    border-radius: 8px;
-    border: 1px solid var(--border);
+    background: rgba(15, 23, 42, 0.65);
+    padding: 22px;
+    border-radius: 12px;
+    border: 1px solid rgba(0, 240, 255, 0.18);
 }
 
 .form-group {
@@ -358,23 +686,25 @@ body {
 
 .form-group label {
     font-size: 0.82rem;
-    font-weight: 600;
-    color: #475569;
+    font-weight: 700;
+    color: #7dd3fc;
+    letter-spacing: 0.3px;
 }
 
 .form-control {
-    padding: 9px 12px;
-    border: 1px solid #cbd5e1;
-    border-radius: 6px;
+    padding: 10px 14px;
+    border: 1px solid rgba(148, 163, 184, 0.25);
+    border-radius: 8px;
     font-size: 0.9rem;
     outline: none;
-    transition: border 0.2s;
-    background-color: #ffffff;
+    transition: all 0.25s ease;
+    background-color: rgba(10, 16, 30, 0.92);
+    color: #f1f5f9;
 }
 
 .form-control:focus {
-    border-color: var(--primary);
-    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+    border-color: #00f0ff;
+    box-shadow: 0 0 0 3px rgba(0, 240, 255, 0.2), 0 0 16px rgba(0, 240, 255, 0.25);
 }
 
 .checkbox-group {
@@ -391,18 +721,19 @@ body {
     gap: 6px;
 }
 
-/* Result Meta Box */
 .result-meta-box {
-    background-color: #f1f5f9;
-    border-left: 4px solid var(--primary);
-    padding: 14px 18px;
-    border-radius: 6px;
+    background: rgba(15, 23, 42, 0.7);
+    border: 1px solid rgba(0, 240, 255, 0.2);
+    border-left: 4px solid #00f0ff;
+    padding: 16px 20px;
+    border-radius: 8px;
     margin-bottom: 20px;
     font-size: 0.88rem;
-    color: #334155;
+    color: #e2e8f0;
     display: flex;
     flex-direction: column;
     gap: 6px;
+    box-shadow: 0 0 15px rgba(0, 240, 255, 0.08);
 }
 
 .chart-wrapper {
@@ -411,7 +742,9 @@ body {
     margin: 20px 0;
 }
 
-/* Explain Mode & Report */
+/* ==========================================================================
+ * 📝 Explain Mode & Report
+ * ========================================================================== */
 .section-header {
     display: flex;
     flex-wrap: wrap;
@@ -424,7 +757,8 @@ body {
 .mode-toggle {
     display: flex;
     gap: 16px;
-    background-color: #f1f5f9;
+    background: rgba(15, 23, 42, 0.85);
+    border: 1px solid rgba(0, 240, 255, 0.2);
     padding: 6px 14px;
     border-radius: 20px;
 }
@@ -435,23 +769,31 @@ body {
     display: flex;
     align-items: center;
     gap: 6px;
+    color: #94a3b8;
+    transition: color 0.2s;
+}
+
+.radio-label:hover {
+    color: #00f0ff;
 }
 
 .report-box {
-    background-color: #ffffff;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 24px;
+    background: rgba(13, 20, 36, 0.92);
+    border: 1px solid rgba(0, 240, 255, 0.22);
+    border-radius: 12px;
+    padding: 26px;
     margin-top: 20px;
-    line-height: 1.7;
+    line-height: 1.75;
     font-size: 0.95rem;
+    color: #e2e8f0;
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.6);
 }
 
 .report-box h2 {
     font-size: 1.15rem;
-    color: #1e293b;
-    border-bottom: 2px solid #e2e8f0;
-    padding-bottom: 6px;
+    color: #38bdf8;
+    border-bottom: 1px solid rgba(0, 240, 255, 0.25);
+    padding-bottom: 8px;
     margin: 20px 0 10px 0;
 }
 
@@ -475,17 +817,18 @@ body {
     gap: 10px;
     padding: 14px;
     font-size: 0.9rem;
-    color: var(--primary);
-    font-weight: 500;
+    color: #00f0ff;
+    font-weight: 600;
 }
 
 .spinner {
-    width: 20px;
-    height: 20px;
-    border: 3px solid #bfdbfe;
-    border-top-color: var(--primary);
+    width: 22px;
+    height: 22px;
+    border: 3px solid rgba(0, 240, 255, 0.2);
+    border-top-color: #00f0ff;
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
+    filter: drop-shadow(0 0 6px #00f0ff);
 }
 
 @keyframes spin {
@@ -500,208 +843,84 @@ body {
     margin-top: 40px;
 }
 
-/* 감성적이고 컴팩트한 가을 토글 스위치 */
-.autumn-switch {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-    user-select: none;
-}
-
-.autumn-switch input {
-    display: none;
-}
-
-.autumn-slider {
-    position: relative;
-    width: 44px;
-    height: 24px;
-    background-color: #334155;
-    border-radius: 20px;
-    transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
-}
-
-.autumn-icon {
-    position: absolute;
-    top: 2px;
-    left: 2px;
-    width: 20px;
-    height: 20px;
-    background: #ffffff;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 11px;
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 1px 2px rgba(0,0,0,0.2);
-}
-
-.autumn-label {
-    font-size: 0.82rem;
-    font-weight: 600;
-    color: #cbd5e1;
-    transition: color 0.3s;
-}
-
-.autumn-switch input:checked + .autumn-slider {
-    background: linear-gradient(135deg, #ea580c, #b45309);
-}
-
-.autumn-switch input:checked + .autumn-slider .autumn-icon {
-    transform: translateX(20px);
-    background: #fff7ed;
-}
-
-.autumn-switch input:checked ~ .autumn-label {
-    color: #fed7aa;
-}
-
-/* 단풍잎 떨어지는 배경 캔버스 */
-.autumn-canvas {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    pointer-events: none;
-    z-index: 99999;
-    display: block;
-}
-
-/* 가을 모드가 켜졌을 때의 바디 테마 */
-body.autumn-mode {
-    --bg-main: #fbf6ee;
-    --bg-card: #fffdfa;
-    --border: #f0dfc8;
-    --primary: #c2410c;
-    --primary-hover: #9a3412;
-    --primary-light: #fff7ed;
-    --text-main: #431407;
-    --text-muted: #854d0e;
-    background: linear-gradient(180deg, #fdf8f0 0%, #fbf3e4 100%);
-}
-
-body.autumn-mode .header {
-    background: linear-gradient(135deg, #78350f, #451a03);
-    border-bottom: 2px solid #b45309;
-}
-
-body.autumn-mode .card {
-    border-color: #ebd5b3;
-    box-shadow: 0 4px 12px rgba(120, 53, 15, 0.08);
-}
-
-body.autumn-mode .notice-banner {
-    background-color: #fef3c7;
-    border-left-color: #d97706;
-    color: #92400e;
-}
-
-body.autumn-mode .upload-box {
-    border-color: #f59e0b;
-    background-color: #fffbeb;
-}
-
-body.autumn-mode .upload-box:hover {
-    background-color: #fef3c7;
-}
-
-body.autumn-mode .metric-card {
-    background-color: #fffaf0;
-    border-color: #fed7aa;
-}
-
-body.autumn-mode .suggestion-card {
-    border-color: #fdba74;
-    background-color: #fff7ed;
-}
-
-body.autumn-mode .suggestion-badge {
-    background-color: #c2410c;
-}
-
-body.autumn-mode .result-meta-box {
-    background-color: #fffbeb;
-    border-left-color: #ea580c;
-}
-
-/* ==========================================
- * 💬 Chat UI (Q&A 대화창 스타일)
- * ========================================== */
+/* ==========================================================================
+ * 💬 Chat UI (Cyber AI Terminal)
+ * ========================================================================== */
 .quick-questions {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: 8px;
     margin-bottom: 16px;
-    padding: 12px;
-    background-color: #f8fafc;
-    border-radius: 8px;
-    border: 1px solid var(--border);
+    padding: 14px;
+    background: rgba(15, 23, 42, 0.75);
+    border-radius: 12px;
+    border: 1px solid rgba(0, 240, 255, 0.18);
 }
 
 .quick-title {
     font-size: 0.8rem;
     font-weight: 700;
-    color: var(--text-muted);
+    color: #38bdf8;
+    letter-spacing: 0.5px;
 }
 
 .quick-btn {
-    background-color: #ffffff;
-    border: 1px solid #cbd5e1;
+    background: rgba(15, 23, 42, 0.9);
+    border: 1px solid rgba(0, 240, 255, 0.25);
     border-radius: 16px;
-    padding: 5px 12px;
-    font-size: 0.8rem;
-    color: #334155;
+    padding: 6px 14px;
+    font-size: 0.82rem;
+    color: #bae6fd;
     cursor: pointer;
-    transition: all 0.2s;
 }
 
 .quick-btn:hover {
-    background-color: #eff6ff;
-    border-color: var(--primary);
-    color: var(--primary);
+    background: rgba(0, 240, 255, 0.15);
+    border-color: #00f0ff;
+    color: #ffffff;
+    box-shadow: 0 0 16px rgba(0, 240, 255, 0.35);
+    transform: translateY(-2px);
 }
 
 .chat-messages {
-    max-height: 400px;
+    max-height: 420px;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    padding: 16px;
-    background-color: #f8fafc;
-    border-radius: 8px;
-    border: 1px solid var(--border);
+    gap: 14px;
+    padding: 18px;
+    background: rgba(10, 16, 30, 0.9);
+    border-radius: 12px;
+    border: 1px solid rgba(0, 240, 255, 0.2);
     margin-bottom: 16px;
 }
 
 .chat-bubble {
-    max-width: 80%;
-    padding: 12px 16px;
-    border-radius: 12px;
+    max-width: 82%;
+    padding: 13px 18px;
+    border-radius: 14px;
     font-size: 0.92rem;
-    line-height: 1.6;
+    line-height: 1.65;
     word-break: break-word;
 }
 
 .chat-bubble.user {
     align-self: flex-end;
-    background-color: var(--primary);
+    background: linear-gradient(135deg, #0284c7 0%, #ff007f 100%);
     color: #ffffff;
     border-bottom-right-radius: 2px;
+    box-shadow: 0 4px 18px rgba(255, 0, 127, 0.3);
 }
 
 .chat-bubble.ai {
     align-self: flex-start;
-    background-color: #ffffff;
-    color: #1e293b;
-    border: 1px solid #e2e8f0;
+    background: rgba(15, 23, 42, 0.95);
+    color: #f1f5f9;
+    border: 1px solid rgba(0, 240, 255, 0.25);
+    border-left: 3px solid #00f0ff;
     border-bottom-left-radius: 2px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
 }
 
 .chat-input-row {
@@ -713,248 +932,36 @@ body.autumn-mode .result-meta-box {
     flex: 1;
 }
 
-body.autumn-mode .chat-bubble.user {
-    background-color: #c2410c;
-}
-
-body.autumn-mode .quick-btn:hover {
-    border-color: #ea580c;
-    color: #c2410c;
-}
-
-/* 빠른 자연어 시각화 버튼 */
 .quick-viz-btn {
-    background-color: #ffffff;
-    border: 1px solid #bfdbfe;
-    border-radius: 16px;
-    padding: 6px 14px;
+    background: rgba(0, 240, 255, 0.1);
+    border: 1px solid #00f0ff;
+    border-radius: 18px;
+    padding: 7px 16px;
     font-size: 0.82rem;
-    color: #1d4ed8;
+    color: #38bdf8;
     cursor: pointer;
-    font-weight: 500;
-    transition: all 0.2s;
+    font-weight: 700;
 }
 
 .quick-viz-btn:hover {
-    background-color: #2563eb;
-    color: #ffffff;
-    border-color: #2563eb;
-    transform: translateY(-1px);
-    box-shadow: 0 2px 5px rgba(37,99,235,0.2);
+    background: #00f0ff;
+    color: #050811;
+    box-shadow: 0 0 20px rgba(0, 240, 255, 0.55);
+    transform: translateY(-2px);
 }
 
-/* ==========================================
- * 🔒 Header Controls & Re-lock Button & PWA Install
- * ========================================== */
-.header-controls {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.btn-install-app {
-    background: linear-gradient(135deg, #0284c7 0%, #2563eb 100%);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    color: #ffffff;
-    padding: 6px 14px;
-    border-radius: 20px;
-    font-size: 0.82rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.25s ease;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    box-shadow: 0 2px 8px rgba(2, 132, 199, 0.35);
-}
-
-.btn-install-app:hover {
-    background: linear-gradient(135deg, #38bdf8 0%, #1d4ed8 100%);
-    box-shadow: 0 4px 14px rgba(2, 132, 199, 0.55);
-    transform: translateY(-1px);
-}
-
-.btn-install-app.pulse {
-    animation: pwaPulse 2s infinite;
-}
-
-@keyframes pwaPulse {
-    0% {
-        box-shadow: 0 0 0 0 rgba(14, 165, 233, 0.7);
-    }
-    70% {
-        box-shadow: 0 0 0 10px rgba(14, 165, 233, 0);
-    }
-    100% {
-        box-shadow: 0 0 0 0 rgba(14, 165, 233, 0);
-    }
-}
-
-.btn-relock {
-    background: rgba(255, 255, 255, 0.12);
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    color: #e2e8f0;
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-}
-
-.btn-relock:hover {
-    background: rgba(255, 255, 255, 0.22);
-    color: #ffffff;
-    border-color: rgba(255, 255, 255, 0.45);
-    transform: translateY(-1px);
-}
-
-/* ==========================================
- * 📲 PWA 설치 안내 모달
- * ========================================== */
-.pwa-modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(15, 23, 42, 0.75);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    z-index: 99998;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    box-sizing: border-box;
-    transition: opacity 0.3s ease;
-}
-
-.pwa-modal-overlay.hidden {
-    display: none;
-}
-
-.pwa-modal-card {
-    position: relative;
-    width: 100%;
-    max-width: 480px;
-    background: #ffffff;
-    border-radius: 20px;
-    padding: 32px 28px 24px;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
-    text-align: center;
-    animation: pwaCardPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-@keyframes pwaCardPop {
-    from {
-        opacity: 0;
-        transform: scale(0.92);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-
-.pwa-modal-close {
-    position: absolute;
-    top: 16px;
-    right: 18px;
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    color: #94a3b8;
-    cursor: pointer;
-    line-height: 1;
-    padding: 4px;
-}
-
-.pwa-modal-close:hover {
-    color: #1e293b;
-}
-
-.pwa-modal-icon {
-    font-size: 2.8rem;
-    margin-bottom: 12px;
-}
-
-.pwa-modal-title {
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: #0f172a;
-    margin-bottom: 8px;
-}
-
-.pwa-modal-desc {
-    font-size: 0.88rem;
-    color: #64748b;
-    margin-bottom: 20px;
-    line-height: 1.5;
-}
-
-.pwa-guide-steps {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    text-align: left;
-    margin-bottom: 24px;
-}
-
-.pwa-step-item {
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 12px;
-    padding: 12px 14px;
-}
-
-.pwa-step-badge {
-    display: inline-block;
-    font-size: 0.78rem;
-    font-weight: 700;
-    color: #2563eb;
-    margin-bottom: 4px;
-}
-
-.pwa-step-item p {
-    font-size: 0.82rem;
-    color: #334155;
-    line-height: 1.5;
-    margin: 0;
-}
-
-.btn-pwa-confirm {
-    width: 100%;
-    padding: 12px;
-    background: #2563eb;
-    color: #ffffff;
-    border: none;
-    border-radius: 12px;
-    font-size: 0.95rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-
-.btn-pwa-confirm:hover {
-    background: #1d4ed8;
-}
-
-/* ==========================================
- * 🔒 보안 잠금 화면 (PIN: 7890) & 잠금해제 애니메이션
- * ========================================== */
+/* ==========================================================================
+ * 🔒 Cyber Security Lock Overlay (PIN: 7890)
+ * ========================================================================== */
 .auth-lock-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: radial-gradient(circle at 50% 35%, rgba(15, 23, 42, 0.94) 0%, rgba(2, 6, 23, 0.98) 100%);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    background: radial-gradient(circle at 50% 35%, rgba(10, 18, 36, 0.97) 0%, rgba(3, 6, 14, 0.99) 100%);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
     z-index: 100000;
     display: flex;
     align-items: center;
@@ -967,28 +974,39 @@ body.autumn-mode .quick-btn:hover {
 .auth-lock-overlay.overlay-fadeout {
     opacity: 0;
     transform: scale(1.06);
-    filter: blur(12px);
+    filter: blur(14px);
     pointer-events: none;
 }
 
 .lock-card {
     position: relative;
     width: 100%;
-    max-width: 400px;
-    background: rgba(30, 41, 59, 0.85);
-    border: 1px solid rgba(148, 163, 184, 0.2);
+    max-width: 410px;
+    background: rgba(13, 22, 42, 0.92);
+    border: 1px solid rgba(0, 240, 255, 0.35);
     border-radius: 24px;
-    padding: 38px 28px;
-    box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.7), 0 0 30px rgba(59, 130, 246, 0.15);
+    padding: 40px 30px;
+    box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.85), 0 0 35px rgba(0, 240, 255, 0.2);
     text-align: center;
     color: #f8fafc;
+    overflow: hidden;
     transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease, border-color 0.4s ease;
 }
 
+.lock-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #00f0ff, #ff007f);
+}
+
 .lock-card.card-unlocked {
-    transform: scale(1.02);
-    border-color: rgba(52, 211, 153, 0.6);
-    box-shadow: 0 25px 60px -12px rgba(16, 185, 129, 0.35), 0 0 45px rgba(52, 211, 153, 0.25);
+    transform: scale(1.03);
+    border-color: rgba(0, 255, 157, 0.7);
+    box-shadow: 0 25px 60px -12px rgba(0, 255, 157, 0.45), 0 0 50px rgba(0, 255, 157, 0.35);
 }
 
 .lock-card.shake {
@@ -996,10 +1014,10 @@ body.autumn-mode .quick-btn:hover {
 }
 
 @keyframes lockShake {
-    10%, 90% { transform: translate3d(-3px, 0, 0); }
-    20%, 80% { transform: translate3d(5px, 0, 0); }
-    30%, 50%, 70% { transform: translate3d(-6px, 0, 0); }
-    40%, 60% { transform: translate3d(6px, 0, 0); }
+    10%, 90% { transform: translate3d(-4px, 0, 0); }
+    20%, 80% { transform: translate3d(6px, 0, 0); }
+    30%, 50%, 70% { transform: translate3d(-7px, 0, 0); }
+    40%, 60% { transform: translate3d(7px, 0, 0); }
 }
 
 .lock-icon-container {
@@ -1015,7 +1033,7 @@ body.autumn-mode .quick-btn:hover {
 .lock-svg {
     position: relative;
     z-index: 2;
-    filter: drop-shadow(0 8px 16px rgba(0,0,0,0.3));
+    filter: drop-shadow(0 8px 18px rgba(0, 240, 255, 0.4));
 }
 
 .lock-shackle {
@@ -1025,7 +1043,7 @@ body.autumn-mode .quick-btn:hover {
 
 .lock-shackle.shackle-open {
     transform: translateY(-9px) rotate(-38deg);
-    stroke: #34d399 !important;
+    stroke: #00ff9d !important;
 }
 
 .lock-ripple {
@@ -1033,7 +1051,7 @@ body.autumn-mode .quick-btn:hover {
     width: 80px;
     height: 80px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(52, 211, 153, 0.4) 0%, rgba(16, 185, 129, 0) 70%);
+    background: radial-gradient(circle, rgba(0, 255, 157, 0.5) 0%, rgba(0, 255, 157, 0) 70%);
     opacity: 0;
     pointer-events: none;
     z-index: 1;
@@ -1046,19 +1064,13 @@ body.autumn-mode .quick-btn:hover {
 }
 
 @keyframes lockRipplePulse {
-    0% {
-        transform: scale(0.6);
-        opacity: 0.9;
-    }
-    100% {
-        transform: scale(2.4);
-        opacity: 0;
-    }
+    0% { transform: scale(0.6); opacity: 0.9; }
+    100% { transform: scale(2.6); opacity: 0; }
 }
 
 .lock-title {
     font-size: 1.45rem;
-    font-weight: 700;
+    font-weight: 800;
     margin-bottom: 8px;
     color: #ffffff;
     transition: color 0.3s;
@@ -1086,15 +1098,16 @@ body.autumn-mode .quick-btn:hover {
     width: 100%;
     box-sizing: border-box;
     padding: 13px 16px;
-    background: rgba(15, 23, 42, 0.75);
-    border: 2px solid #334155;
+    background: rgba(6, 10, 20, 0.92);
+    border: 2px solid rgba(0, 240, 255, 0.35);
     border-radius: 12px;
-    color: #ffffff;
+    color: #00f0ff;
     font-size: 1.4rem;
     letter-spacing: 0.4em;
     text-align: center;
-    font-weight: 700;
+    font-weight: 800;
     outline: none;
+    text-shadow: 0 0 12px rgba(0, 240, 255, 0.5);
     transition: all 0.25s ease;
 }
 
@@ -1105,18 +1118,17 @@ body.autumn-mode .quick-btn:hover {
 }
 
 .lock-input:focus {
-    border-color: #3b82f6;
-    background: rgba(15, 23, 42, 0.95);
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+    border-color: #00f0ff;
+    background: rgba(8, 14, 28, 0.98);
+    box-shadow: 0 0 0 3px rgba(0, 240, 255, 0.25), 0 0 24px rgba(0, 240, 255, 0.4);
 }
 
 .lock-error-msg {
     font-size: 0.82rem;
-    color: #f87171;
-    font-weight: 500;
+    color: #ff007f;
+    font-weight: 600;
     min-height: 20px;
     margin-top: -4px;
-    transition: opacity 0.2s;
 }
 
 .lock-error-msg.hidden {
@@ -1126,24 +1138,197 @@ body.autumn-mode .quick-btn:hover {
 .btn-unlock {
     width: 100%;
     padding: 13px 20px;
-    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    background: linear-gradient(135deg, #00f0ff 0%, #0284c7 50%, #ff007f 100%);
     border: none;
     border-radius: 12px;
-    color: #ffffff;
+    color: #040814;
     font-size: 1rem;
-    font-weight: 600;
+    font-weight: 800;
     cursor: pointer;
-    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
-    transition: all 0.25s ease;
+    box-shadow: 0 4px 20px rgba(0, 240, 255, 0.45);
 }
 
 .btn-unlock:hover {
-    background: linear-gradient(135deg, #60a5fa 0%, #1d4ed8 100%);
-    transform: translateY(-1px);
-    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.55);
+    background: linear-gradient(135deg, #38bdf8 0%, #00f0ff 50%, #ff2a85 100%);
+    box-shadow: 0 6px 30px rgba(0, 240, 255, 0.7), 0 0 20px rgba(255, 0, 127, 0.4);
+    transform: translateY(-2px);
 }
 
-.btn-unlock:active {
-    transform: translateY(1px);
+/* ==========================================================================
+ * 📲 PWA Modal (Cyber Terminal Modal)
+ * ========================================================================== */
+.pwa-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(3, 6, 14, 0.8);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    z-index: 99998;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    box-sizing: border-box;
+    transition: opacity 0.3s ease;
 }
 
+.pwa-modal-overlay.hidden {
+    display: none;
+}
+
+.pwa-modal-card {
+    position: relative;
+    width: 100%;
+    max-width: 480px;
+    background: rgba(13, 20, 36, 0.96);
+    border: 1px solid rgba(0, 240, 255, 0.35);
+    border-radius: 20px;
+    padding: 32px 28px 24px;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85), 0 0 30px rgba(0, 240, 255, 0.2);
+    text-align: center;
+    color: #f1f5f9;
+    animation: pwaCardPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes pwaCardPop {
+    from { opacity: 0; transform: scale(0.92); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.pwa-modal-close {
+    position: absolute;
+    top: 16px;
+    right: 18px;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #64748b;
+    cursor: pointer;
+    line-height: 1;
+    padding: 4px;
+}
+
+.pwa-modal-close:hover {
+    color: #00f0ff;
+}
+
+.pwa-modal-icon {
+    font-size: 2.8rem;
+    margin-bottom: 12px;
+}
+
+.pwa-modal-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 8px;
+}
+
+.pwa-modal-desc {
+    font-size: 0.88rem;
+    color: #94a3b8;
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
+.pwa-guide-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    text-align: left;
+    margin-bottom: 24px;
+}
+
+.pwa-step-item {
+    background: rgba(10, 16, 30, 0.85);
+    border: 1px solid rgba(0, 240, 255, 0.15);
+    border-radius: 12px;
+    padding: 12px 14px;
+}
+
+.pwa-step-badge {
+    display: inline-block;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #00f0ff;
+    margin-bottom: 4px;
+}
+
+.pwa-step-item p {
+    font-size: 0.82rem;
+    color: #cbd5e1;
+    line-height: 1.5;
+    margin: 0;
+}
+
+.btn-pwa-confirm {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(135deg, #00f0ff 0%, #0284c7 100%);
+    color: #040814;
+    border: none;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 4px 18px rgba(0, 240, 255, 0.4);
+}
+
+.btn-pwa-confirm:hover {
+    background: linear-gradient(135deg, #38bdf8 0%, #00f0ff 100%);
+    box-shadow: 0 6px 25px rgba(0, 240, 255, 0.6);
+    transform: translateY(-2px);
+}
+
+/* ==========================================================================
+ * 🍂 Neo-Autumn Mode (Cyber Autumn Palette)
+ * ========================================================================== */
+.autumn-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 99999;
+    display: block;
+}
+
+body.autumn-mode {
+    --bg-main: #140b08;
+    --bg-card: rgba(35, 18, 12, 0.85);
+    --border: rgba(249, 115, 22, 0.3);
+    --border-bright: rgba(249, 115, 22, 0.6);
+    --primary: #f97316;
+    --primary-hover: #ea580c;
+    --text-main: #fef3c7;
+    --text-muted: #d97706;
+    background-image: 
+        radial-gradient(circle at 15% 15%, rgba(234, 88, 12, 0.12) 0%, transparent 40%),
+        radial-gradient(circle at 85% 25%, rgba(180, 83, 9, 0.1) 0%, transparent 45%),
+        linear-gradient(rgba(249, 115, 22, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(249, 115, 22, 0.03) 1px, transparent 1px);
+}
+
+body.autumn-mode .header {
+    background: linear-gradient(180deg, #2a1107 0%, #170903 100%);
+    border-bottom: 1px solid rgba(249, 115, 22, 0.35);
+}
+
+body.autumn-mode .header h1 {
+    background: linear-gradient(135deg, #ffffff 25%, #fb923c 70%, #ef4444 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+body.autumn-mode .chat-bubble.user {
+    background: linear-gradient(135deg, #ea580c 0%, #b91c1c 100%);
+}
+
+body.autumn-mode .btn-primary {
+    background: linear-gradient(135deg, #f97316 0%, #ea580c 60%, #b91c1c 100%);
+    color: #ffffff;
+}
