@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Data Insight Builder</title>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="/static/style.css?v=2">
+</head>
+<body>
+    <header class="header">
+        <div class="header-container">
+            <h1>🔬 AI Data Insight Builder</h1>
+            <p class="subtitle">공식 데이터 진단 &bull; Pandas 정밀 계산 &bull; Gemini 통계 해석</p>
+            <div class="header-controls">
+                <label class="autumn-switch" title="가을 단풍잎 모드 (ON/OFF)">
+                    <input type="checkbox" id="autumnToggle">
+                    <span class="autumn-slider">
+                        <span class="autumn-icon">🍂</span>
+                    </span>
+                </label>
+                <div id="healthBadge" class="health-badge">서버 상태 확인 중...</div>
+                <script>
+                    (function() {
+                        fetch('/health')
+                            .then(r => r.json())
+                            .then(d => {
+                                const el = document.getElementById('healthBadge');
+                                if (!el) return;
+                                if (d.status === 'ok') {
+                                    if (d.gemini_api_key_configured) {
+                                        el.textContent = '🟢 연결됨 (' + d.model + ')';
+                                        el.className = 'health-badge ok';
+                                    } else {
+                                        el.textContent = '🟡 연결됨 (API 키 없음)';
+                                        el.className = 'health-badge warn';
+                                    }
+                                }
+                            })
+                            .catch(err => {
+                                const el = document.getElementById('healthBadge');
+                                if (el) {
+                                    el.textContent = '🔴 연결 오류';
+                                    el.className = 'health-badge warn';
+                                }
+                            });
+                    })();
+                </script>
+            </div>
+        </div>
+    </header>
+    <!-- 진짜 단풍잎 그래픽 애니메이션 캔버스 (마우스 클릭 100% 통과) -->
+    <canvas id="autumnCanvas" style="position:fixed; top:0; left:0; width:100vw; height:100vh; pointer-events:none !important; z-index:9999; display:none;"></canvas>
+
+    <script>
+        (function() {
+            const toggle = document.getElementById('autumnToggle');
+            const canvas = document.getElementById('autumnCanvas');
+            let animId = null;
+            let leaves = [];
+
+            // 진짜 단풍잎/낙엽 색상 팔레트
+            const leafColors = [
+                { main: '#b91c1c', vein: '#7f1d1d' }, // 붉은 단풍
+                { main: '#dc2626', vein: '#991b1b' }, // 선홍색 단풍
+                { main: '#ea580c', vein: '#9a3412' }, // 주홍빛 단풍
+                { main: '#d97706', vein: '#78350f' }, // 노란 은행/단풍
+                { main: '#b45309', vein: '#78350f' }, // 짙은 가을 낙엽
+                { main: '#92400e', vein: '#451a03' }  // 갈색 낙엽
+            ];
+
+            function createLeaves() {
+                leaves = [];
+                const count = 45; // 화면 전체에 흩날릴 진짜 단풍잎 수
+                const w = window.innerWidth;
+                const h = window.innerHeight;
+
+                for (let i = 0; i < count; i++) {
+                    leaves.push({
+                        x: Math.random() * w,
+                        y: Math.random() * h,
+                        size: 14 + Math.random() * 18,
+                        speedY: 1.0 + Math.random() * 1.6,
+                        speedX: (Math.random() - 0.5) * 1.2,
+                        // 3차원 팔락거림 (회전각 + 납작해지는 flutter 효과)
+                        angle: Math.random() * Math.PI * 2,
+                        angleSpeed: (Math.random() - 0.5) * 0.04,
+                        flutter: Math.random() * Math.PI * 2,
+                        flutterSpeed: 0.03 + Math.random() * 0.04,
+                        sway: Math.random() * Math.PI * 2,
+                        swaySpeed: 0.015 + Math.random() * 0.02,
+                        swayAmp: 1.2 + Math.random() * 1.5,
+                        color: leafColors[Math.floor(Math.random() * leafColors.length)],
+                        type: Math.random() > 0.4 ? 'maple' : 'oak' // 단풍잎 or 떡갈잎
+                    });
+                }
+            }
+
+            // 사실적인 단풍잎(자연스러운 베지어 곡선 + 잎몸 그라데이션 + 섬세한 잎맥)
+            function drawRealisticMapleLeaf(ctx, size, color) {
+                ctx.save();
+
+                // 잎사귀 그라데이션 (자연스러운 붉은빛-주황빛 그러데이션)
+                const grad = ctx.createRadialGradient(0, 0, size * 0.1, 0, 0, size);
+                grad.addColorStop(0, color.center || '#fbbf24');
+                grad.addColorStop(0.5, color.main);
+                grad.addColorStop(1, color.edge || '#7f1d1d');
+
+                ctx.fillStyle = grad;
+                ctx.strokeStyle = color.vein;
+                ctx.lineWidth = 0.8;
+
+                // 유기적인 7갈래 단풍잎 실루엣 (둥글고 뾰족한 자연 잎사귀)
+                ctx.beginPath();
+                ctx.moveTo(0, size * 0.9); // 줄기 꼭지
+                ctx.quadraticCurveTo(size * 0.08, size * 0.5, size * 0.2, size * 0.55);
+
+                // 우측 하단 갈래
+                ctx.bezierCurveTo(size * 0.5, size * 0.7, size * 0.65, size * 0.5, size * 0.55, size * 0.35);
+                ctx.quadraticCurveTo(size * 0.35, size * 0.35, size * 0.45, size * 0.2);
+
+                // 우측 메인 갈래
+                ctx.bezierCurveTo(size * 0.85, size * 0.25, size * 0.95, -size * 0.05, size * 0.6, -size * 0.15);
+                ctx.quadraticCurveTo(size * 0.45, -size * 0.15, size * 0.4, -size * 0.35);
+
+                // 중앙 상단 메인 갈래 (뾰족한 팁)
+                ctx.bezierCurveTo(size * 0.45, -size * 0.75, size * 0.15, -size * 0.95, 0, -size);
+                ctx.bezierCurveTo(-size * 0.15, -size * 0.95, -size * 0.45, -size * 0.75, -size * 0.4, -size * 0.35);
+
+                // 좌측 메인 갈래
+                ctx.quadraticCurveTo(-size * 0.45, -size * 0.15, -size * 0.6, -size * 0.15);
+                ctx.bezierCurveTo(-size * 0.95, -size * 0.05, -size * 0.85, size * 0.25, -size * 0.45, size * 0.2);
+
+                // 좌측 하단 갈래
+                ctx.quadraticCurveTo(-size * 0.35, size * 0.35, -size * 0.55, size * 0.35);
+                ctx.bezierCurveTo(-size * 0.65, size * 0.5, -size * 0.5, size * 0.7, -size * 0.2, size * 0.55);
+
+                ctx.quadraticCurveTo(-size * 0.08, size * 0.5, 0, size * 0.9);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+
+                // 사실적인 중심 잎맥 및 잔가지
+                ctx.beginPath();
+                ctx.strokeStyle = 'rgba(254, 240, 138, 0.4)';
+                ctx.lineWidth = 1.2;
+                ctx.moveTo(0, size * 0.9);
+                ctx.quadraticCurveTo(0, 0, 0, -size * 0.85); // 중심맥
+
+                // 좌우 뻗어나가는 잎맥
+                ctx.moveTo(0, size * 0.3);
+                ctx.quadraticCurveTo(size * 0.2, size * 0.1, size * 0.55, -size * 0.05);
+                ctx.moveTo(0, size * 0.3);
+                ctx.quadraticCurveTo(-size * 0.2, size * 0.1, -size * 0.55, -size * 0.05);
+
+                ctx.moveTo(0, size * 0.45);
+                ctx.quadraticCurveTo(size * 0.25, size * 0.35, size * 0.45, size * 0.45);
+                ctx.moveTo(0, size * 0.45);
+                ctx.quadraticCurveTo(-size * 0.25, size * 0.35, -size * 0.45, size * 0.45);
+                ctx.stroke();
+
+                ctx.restore();
+            }
+
+            // 부드러운 가을 은행잎 / 타원형 낙엽
+            function drawGinkgoLeaf(ctx, size, color) {
+                ctx.save();
+                const grad = ctx.createLinearGradient(0, size, 0, -size);
+                grad.addColorStop(0, color.vein);
+                grad.addColorStop(1, color.main);
+
+                ctx.fillStyle = grad;
+                ctx.strokeStyle = color.vein;
+                ctx.lineWidth = 0.8;
+
+                ctx.beginPath();
+                ctx.moveTo(0, size * 0.8);
+                ctx.lineTo(0, size * 0.2);
+                // 부채꼴 은행잎 곡선
+                ctx.bezierCurveTo(size * 0.4, size * 0.1, size * 0.8, -size * 0.2, size * 0.65, -size * 0.6);
+                ctx.quadraticCurveTo(size * 0.2, -size * 0.8, 0, -size * 0.5); // 가운데 파임
+                ctx.quadraticCurveTo(-size * 0.2, -size * 0.8, -size * 0.65, -size * 0.6);
+                ctx.bezierCurveTo(-size * 0.8, -size * 0.2, -size * 0.4, size * 0.1, 0, size * 0.2);
+                ctx.lineTo(0, size * 0.8);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+                ctx.restore();
+            }
+
+            function loop() {
+                if (!canvas || canvas.style.display === 'none') return;
+                const ctx = canvas.getContext('2d');
+                const w = canvas.width = window.innerWidth;
+                const h = canvas.height = window.innerHeight;
+
+                ctx.clearRect(0, 0, w, h);
+
+                leaves.forEach(l => {
+                    l.y += l.speedY;
+                    l.sway += l.swaySpeed;
+                    l.x += l.speedX + Math.sin(l.sway) * l.swayAmp;
+                    l.angle += l.angleSpeed;
+                    l.flutter += l.flutterSpeed;
+
+                    // 화면 밖으로 나가면 위에서 다시 스폰
+                    if (l.y > h + 40) {
+                        l.y = -30;
+                        l.x = Math.random() * w;
+                    }
+                    if (l.x > w + 40) l.x = -30;
+                    if (l.x < -40) l.x = w + 30;
+
+                    // 3차원 팔락거림 계산 (cos로 x축 스케일을 찌그러뜨림)
+                    const scaleX = Math.cos(l.flutter);
+
+                    ctx.save();
+                    ctx.translate(l.x, l.y);
+                    ctx.rotate(l.angle);
+                    ctx.scale(scaleX, 1); // 바람에 뒤집히는 3D 팔락거림 효과!
+                    ctx.shadowColor = 'rgba(0,0,0,0.12)';
+                    ctx.shadowBlur = 4;
+                    ctx.shadowOffsetY = 2;
+
+                    if (l.type === 'maple') {
+                        drawRealisticMapleLeaf(ctx, l.size, l.color);
+                    } else {
+                        drawGinkgoLeaf(ctx, l.size, l.color);
+                    }
+                    ctx.restore();
+                });
+
+                animId = requestAnimationFrame(loop);
+            }
+
+            if (toggle) {
+                toggle.addEventListener('change', function(e) {
+                    const on = e.target.checked;
+                    document.body.classList.toggle('autumn-mode', on);
+
+                    if (on) {
+                        canvas.style.display = 'block';
+                        createLeaves();
+                        if (animId) cancelAnimationFrame(animId);
+                        animId = requestAnimationFrame(loop);
+                        console.log('[AUTUMN] 🍁 진짜 단풍잎 팔락거림 모드 시작');
+                    } else {
+                        canvas.style.display = 'none';
+                        if (animId) {
+                            cancelAnimationFrame(animId);
+                            animId = null;
+                        }
+                        const ctx = canvas.getContext('2d');
+                        ctx.clearRect(0, 0, canvas.width, canvas.height);
+                        console.log('[AUTUMN] 가을 모드 종료');
+                    }
+                });
+            }
+        })();
+    </script>
+
+    <main class="main-container">
+        <!-- 메모리 안내 배너 -->
+        <div class="notice-banner">
+            ℹ️ <strong>안내:</strong> 업로드된 파일은 서버 디스크에 영구 저장되지 않으며, 서버 메모리에 1개 데이터셋만 임시 보관됩니다. 서버를 재시작하면 데이터는 초기화됩니다.
+        </div>
+
+        <!-- 1단계: CSV 업로드 섹션 -->
+        <section class="card upload-section">
+            <h2>📁 1단계: CSV 파일 업로드 및 자동 진단</h2>
+            <p class="desc">BOM, 인코딩(UTF-8, CP949 등), 상단 안내문(Skiprows)을 자동으로 감지합니다.</p>
+            
+            <div class="upload-box" id="dropZone" style="cursor: default;">
+                <input type="file" id="csvFileInput" accept=".csv" style="display:block !important; margin: 0 auto 12px auto; padding: 10px; font-size: 15px; border: 1px solid #94a3b8; border-radius: 6px; background: #fff;" />
+                <span id="selectedFileName" class="file-name" style="display:block; margin-bottom: 12px; font-weight: 600;">선택된 파일 없음</span>
+                <button type="button" id="btnStartInspect" class="btn btn-primary" style="font-size: 1.05rem; padding: 12px 28px; cursor: pointer; z-index: 100; position: relative;">🚀 분석 및 진단 시작하기</button>
+            </div>
+
+            <div id="inspectLoading" class="loading hidden">
+                <div class="spinner"></div> 파일 분석 및 진단 중...
+            </div>
+
+            <script>
+                document.getElementById('csvFileInput').addEventListener('change', function(e) {
+                    const fn = document.getElementById('selectedFileName');
+                    if (e.target.files && e.target.files[0]) {
+                        fn.textContent = '✅ 선택 완료: ' + e.target.files[0].name + ' (' + (e.target.files[0].size/1024).toFixed(1) + ' KB)';
+                        fn.style.color = '#059669';
+                    }
+                });
+
+                document.getElementById('btnStartInspect').addEventListener('click', function() {
+                    const input = document.getElementById('csvFileInput');
+                    if (!input || !input.files || !input.files[0]) {
+                        alert('위의 [파일 선택] 버튼을 먼저 눌러서 CSV 파일을 골라주세요!');
+                        return;
+                    }
+                    const file = input.files[0];
+                    const fd = new FormData();
+                    fd.append('file', file);
+
+                    document.getElementById('inspectLoading').classList.remove('hidden');
+
+                    fetch('/inspect', { method: 'POST', body: fd })
+                        .then(r => r.json())
+                        .then(d => {
+                            document.getElementById('inspectLoading').classList.add('hidden');
+                            if (d.error) {
+                                alert('[오류] ' + d.error);
+                                return;
+                            }
+                            // 진단 정보 표시
+                            document.getElementById('metricEncoding').textContent = d.encoding;
+                            document.getElementById('metricSkiprows').textContent = d.skiprows + ' 줄';
+                            document.getElementById('metricShape').textContent = d.rows.toLocaleString() + '행 × ' + d.columns_count + '열';
+                            document.getElementById('metricRecYear').textContent = d.recommended_year ? d.recommended_year + '년' : '감지 안 됨';
+                            document.getElementById('metricAggregates').textContent = d.aggregate_candidates_count + '개 후보 감지';
+
+                            // 경고
+                            const wb = document.getElementById('warningsBox');
+                            if (d.warnings && d.warnings.length > 0) {
+                                wb.innerHTML = d.warnings.map(w => '<div class="warning-item">⚠️ ' + w + '</div>').join('');
+                                wb.classList.remove('hidden');
+                            }
+
+                            // 미리보기
+                            if (d.preview_rows && d.preview_rows.length > 0) {
+                                const cols = Object.keys(d.preview_rows[0]);
+                                document.getElementById('previewHead').innerHTML = '<tr>' + cols.map(c => '<th>' + c + '</th>').join('') + '</tr>';
+                                document.getElementById('previewBody').innerHTML = d.preview_rows.map(row => {
+                                    return '<tr>' + cols.map(c => '<td>' + (row[c] !== null ? row[c] : '') + '</td>').join('') + '</tr>';
+                                }).join('');
+                            }
+
+                            // 모든 후속 섹션 강제 노출
+                            document.getElementById('diagnoseSection').classList.remove('hidden');
+                            document.getElementById('askVizSection').classList.remove('hidden');
+                            document.getElementById('suggestSection').classList.remove('hidden');
+                            document.getElementById('runSection').classList.remove('hidden');
+                            document.getElementById('chatSection').classList.remove('hidden');
+
+                            if (d.recommended_year) {
+                                document.getElementById('paramRefPeriod').value = d.recommended_year;
+                            }
+
+                            // AI 제안 요청 트리거
+                            document.getElementById('btnRequestSuggest').click();
+
+                            // 대시보드로 스크롤
+                            document.getElementById('diagnoseSection').scrollIntoView({ behavior: 'smooth' });
+                        })
+                        .catch(err => {
+                            document.getElementById('inspectLoading').classList.add('hidden');
+                            alert('[오류] 서버 통신 실패: ' + err.message);
+                        });
+                });
+            </script>
+        </section>
+
+        <!-- 2단계: 데이터 진단 결과 대시보드 (진단 완료 후 표시) -->
+        <section id="diagnoseSection" class="card hidden">
+            <h2>📋 2단계: 데이터 진단 리포트</h2>
+            
+            <!-- 경고 메시지 영역 -->
+            <div id="warningsBox" class="warnings-box hidden"></div>
+
+            <!-- 기본 정보 그리드 -->
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <span class="metric-title">인코딩 감지</span>
+                    <span class="metric-val" id="metricEncoding">-</span>
+                </div>
+                <div class="metric-card">
+                    <span class="metric-title">건너뛴 안내문(헤더)</span>
+                    <span class="metric-val" id="metricSkiprows">-</span>
+                </div>
+                <div class="metric-card">
+                    <span class="metric-title">데이터 규모</span>
+                    <span class="metric-val" id="metricShape">-</span>
+                </div>
+                <div class="metric-card">
+                    <span class="metric-title">권장 기준 연도</span>
+                    <span class="metric-val highlight" id="metricRecYear">-</span>
+                </div>
+                <div class="metric-card">
+                    <span class="metric-title">집계/그룹 행 후보</span>
+                    <span class="metric-val" id="metricAggregates">-</span>
+                </div>
+            </div>
+
+            <!-- 데이터 미리보기 테이블 -->
+            <div class="preview-container">
+                <h3>🔍 데이터 미리보기 (상위 10행)</h3>
+                <div class="table-responsive">
+                    <table id="previewTable" class="data-table">
+                        <thead id="previewHead"></thead>
+                        <tbody id="previewBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3단계: 💡 자연어 질문 & 스마트 시각화 (신규 전진 배치) -->
+        <section id="askVizSection" class="card hidden">
+            <div class="section-header">
+                <h2>💬 3단계: 자연어로 묻고 바로 시각화하기</h2>
+                <span class="subtitle" style="color:var(--text-muted);">듣고 싶은 질문을 자유롭게 입력하면 답변과 함께 맞춤 차트 버튼이 나타납니다.</span>
+            </div>
+
+            <!-- 빠른 예시 질문 버튼들 -->
+            <div class="quick-questions" style="margin-bottom: 14px; display: flex; flex-wrap: wrap; gap: 8px;">
+                <span class="quick-title" style="align-self: center; font-weight: 600; color: #475569;">추천 질문:</span>
+                <button type="button" class="quick-viz-btn" data-q="2024년 세계 1-10등까지 순위 국가와 대한민국을 함께 비교해줘">🔥 2024년 1~10위 & 대한민국 비교</button>
+                <button type="button" class="quick-viz-btn" data-q="한국의 연도별 추세를 선그래프로 보여줘">📈 한국 연도별 추세 (선 그래프)</button>
+                <button type="button" class="quick-viz-btn" data-q="미국과 중국의 인터넷 이용률 추이를 비교해줘">⚔️ 미국 vs 중국 추이 비교</button>
+                <button type="button" class="quick-viz-btn" data-q="2010년 인터넷 이용률 상위 10개국 순위 보여줘">📅 2010년 상위 10개국 순위</button>
+                <button type="button" class="quick-viz-btn" data-q="2000년부터 2024년까지 가장 인터넷이 급성장한 나라 10개">🚀 2000년 이후 급성장 Top 10</button>
+                <button type="button" class="quick-viz-btn" data-q="인터넷 이용률이 가장 낮은 하위 10개 나라는 어디야?">📉 최하위 10개국 순위</button>
+            </div>
+
+            <!-- 질문 입력창 -->
+            <div class="chat-input-row" style="margin-bottom: 14px;">
+                <input type="text" id="askVizInput" class="form-control" placeholder="어떤 질문이든 입력해 보세요! (예: 2010년 순위, 한국 추세, 미국 중국 비교, 하위 10개국, 2005년~2020년 성장)" />
+                <button type="button" id="btnAskViz" class="btn btn-primary" style="white-space: nowrap; padding: 10px 20px;">분석 질문하기</button>
+            </div>
+
+            <div id="askVizLoading" class="loading hidden">
+                <div class="spinner"></div> Pandas가 데이터를 계산하고 Gemini가 답변을 준비 중입니다...
+            </div>
+
+            <!-- 답변 및 시각화 결과 컨테이너 -->
+            <div id="askVizResultBox" class="hidden" style="margin-top: 16px; background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; padding: 20px;">
+                <div id="askVizAnswerText" style="font-size: 0.96rem; line-height: 1.7; color: #1e293b; margin-bottom: 16px;"></div>
+
+                <!-- 스마트 시각화 버튼 생성 영역 -->
+                <div id="askVizButtonArea" style="margin-bottom: 16px;"></div>
+
+                <!-- 동적 차트 캔버스 영역 -->
+                <div id="askVizChartContainer" class="hidden" style="background:#fff; padding:16px; border-radius:8px; border:1px solid var(--border);">
+                    <h3 id="askVizChartTitle" style="font-size: 1rem; margin-bottom: 12px; color: #334155; font-weight: 600;"></h3>
+                    <div style="position: relative; height: 440px;">
+                        <canvas id="askVizCanvas"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                (function() {
+                    let vizChartInstance = null;
+                    let currentChartPayload = null;
+
+                    function formatMarkdown(text) {
+                        if (!text) return '';
+                        return text
+                            .replace(/^### (.*$)/gim, '<h3 style="font-size:1.1rem; margin-top:14px; margin-bottom:8px; color:#1e293b; font-weight:700;">$1</h3>')
+                            .replace(/^## (.*$)/gim, '<h2 style="font-size:1.2rem; margin-top:16px; margin-bottom:10px; color:#0f172a; font-weight:700;">$1</h2>')
+                            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                            .replace(/^- (.*$)/gim, '<div style="margin-left:14px; margin-bottom:4px; line-height:1.6;">• $1</div>')
+                            .replace(/\n\n/g, '<div style="margin-bottom:10px;"></div>')
+                            .replace(/\n/g, '<br>');
+                    }
+
+                    function doAskViz(query) {
+                        const q = query || document.getElementById('askVizInput').value.trim();
+                        if (!q) {
+                            alert('질문 내용을 입력해 주세요!');
+                            return;
+                        }
+
+                        document.getElementById('askVizLoading').classList.remove('hidden');
+                        document.getElementById('askVizResultBox').classList.add('hidden');
+                        document.getElementById('askVizChartContainer').classList.add('hidden');
+
+                        fetch('/ask_and_visualize', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ query: q })
+                        })
+                        .then(r => r.json())
+                        .then(data => {
+                            document.getElementById('askVizLoading').classList.add('hidden');
+                            if (data.error) {
+                                alert('[오류] ' + data.error);
+                                return;
+                            }
+
+                            // 1. 마크다운 스타일 서식 적용
+                            const ansEl = document.getElementById('askVizAnswerText');
+                            ansEl.innerHTML = formatMarkdown(data.answer);
+
+                            // 2. 시각화 버튼 생성
+                            const btnArea = document.getElementById('askVizButtonArea');
+                            btnArea.innerHTML = '';
+                            currentChartPayload = data.chart_payload;
+
+                            if (currentChartPayload && currentChartPayload.chart_data) {
+                                const vizBtn = document.createElement('button');
+                                vizBtn.className = 'btn btn-primary';
+                                vizBtn.style.cssText = 'background: linear-gradient(135deg, #2563eb, #1d4ed8); font-size: 0.98rem; font-weight:600; padding: 12px 24px; box-shadow: 0 4px 10px rgba(37,99,235,0.25); border-radius: 8px; cursor: pointer;';
+                                vizBtn.innerHTML = (data.chart_title || '📊 맞춤형 시각화 그래프 보기') + ' &darr;';
+                                
+                                vizBtn.addEventListener('click', function() {
+                                    renderVizChart(currentChartPayload, data.chart_title);
+                                });
+
+                                btnArea.appendChild(vizBtn);
+                            }
+
+                            document.getElementById('askVizResultBox').classList.remove('hidden');
+                            document.getElementById('askVizResultBox').scrollIntoView({ behavior: 'smooth' });
+                        })
+                        .catch(err => {
+                            document.getElementById('askVizLoading').classList.add('hidden');
+                            alert('[오류] 분석 실패: ' + err.message);
+                        });
+                    }
+
+                    function renderVizChart(payload, title) {
+                        const chartBox = document.getElementById('askVizChartContainer');
+                        const canvas = document.getElementById('askVizCanvas');
+                        const titleEl = document.getElementById('askVizChartTitle');
+
+                        titleEl.textContent = title || payload.summary || '시각화 결과';
+                        chartBox.classList.remove('hidden');
+
+                        if (vizChartInstance) {
+                            vizChartInstance.destroy();
+                        }
+
+                        const ctx = canvas.getContext('2d');
+                        vizChartInstance = new Chart(ctx, {
+                            type: payload.chart_type || 'bar',
+                            data: payload.chart_data,
+                            options: Object.assign({
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                plugins: { legend: { position: 'top' } }
+                            }, payload.chart_options || {})
+                        });
+
+                        setTimeout(function() {
+                            chartBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                        }, 100);
+                    }
+
+                    document.getElementById('btnAskViz').addEventListener('click', function() { doAskViz(); });
+                    document.getElementById('askVizInput').addEventListener('keydown', function(e) {
+                        if (e.key === 'Enter') {
+                            e.preventDefault();
+                            doAskViz();
+                        }
+                    });
+
+                    document.querySelectorAll('.quick-viz-btn').forEach(b => {
+                        b.addEventListener('click', function() {
+                            const q = this.getAttribute('data-q');
+                            document.getElementById('askVizInput').value = q;
+                            doAskViz(q);
+                        });
+                    });
+                })();
+            </script>
+        </section>
+
+        <!-- 4단계: Gemini AI 분석 제안 (선택형 도구) -->
+        <section id="suggestSection" class="card hidden">
+            <div class="section-header">
+                <h2>💡 4단계: Gemini AI 분석 제안</h2>
+                <button id="btnRequestSuggest" class="btn btn-secondary">AI 제안 다시 받기</button>
+            </div>
+            <p class="desc">Gemini가 전체 CSV를 보지 않고 진단 요약만 읽은 뒤, 12개 검증된 도구 중에서 가장 유의미한 분석을 제안합니다.</p>
+            
+            <div id="suggestLoading" class="loading hidden">
+                <div class="spinner"></div> Gemini 분석 제안 생성 중...
+            </div>
+
+            <div id="suggestionCards" class="suggestion-grid"></div>
+        </section>
+
+        <!-- 4단계: 분석 실행 및 도구 제어 패널 -->
+        <section id="runSection" class="card hidden">
+            <h2>⚙️ 4단계: Pandas 분석 실행</h2>
+            <div class="tool-controls">
+                <div class="form-group">
+                    <label for="toolSelect">분석 도구 선택:</label>
+                    <select id="toolSelect" class="form-control">
+                        <option value="top_bottom_n">7. 상위·하위 N 순위 (수평 막대)</option>
+                        <option value="compare_one_vs_all">12. 나 vs 전체 평균·중앙값 비교 (강조 막대)</option>
+                        <option value="trend_line">6. 주요 항목 연도별 추이 (선 차트)</option>
+                        <option value="distribution">10. 구간별 데이터 분포 (히스토그램)</option>
+                        <option value="change_rate">9. 두 시점 사이 변화량·변화율</option>
+                        <option value="correlation_scatter">11. 두 지표 상관계수 및 산점도</option>
+                        <option value="group_summary">8. 그룹별 평균·합계 집계</option>
+                        <option value="describe_numeric">5. 기초 통계량 (평균, 중앙값 등)</option>
+                        <option value="year_coverage">3. 연도별 충실도 점검</option>
+                        <option value="detect_aggregates">4. 집계 행 목록 탐지</option>
+                        <option value="quality_report">2. 전반적 데이터 품질 보고서</option>
+                        <option value="reshape_wide_to_long">1. 와이드 포맷 &rarr; 롱 포맷 변환</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="paramRefPeriod">기준 시점 (Reference Period):</label>
+                    <input type="text" id="paramRefPeriod" class="form-control" placeholder="예: 2024" />
+                </div>
+
+                <div class="form-group">
+                    <label for="paramTargetItem">대상 국가/항목 (필요시):</label>
+                    <input type="text" id="paramTargetItem" class="form-control" placeholder="예: Korea" />
+                </div>
+
+                <div class="form-group checkbox-group">
+                    <label>
+                        <input type="checkbox" id="paramExcludeAgg" checked />
+                        집계/대륙 묶음 행 제외 (권장)
+                    </label>
+                </div>
+
+                <button id="btnRunTool" class="btn btn-primary">Pandas 계산 실행</button>
+            </div>
+
+            <div id="runLoading" class="loading hidden">
+                <div class="spinner"></div> Pandas 계산 및 차트 데이터 생성 중...
+            </div>
+        </section>
+
+        <!-- 5단계: 계산 결과 및 차트 시각화 -->
+        <section id="resultSection" class="card hidden">
+            <h2>📊 5단계: Pandas 계산 결과 및 시각화</h2>
+            
+            <!-- 계산 메타데이터 배너 (사용 행, 제외 행, 주의사항) -->
+            <div id="resultMetaBox" class="result-meta-box"></div>
+
+            <!-- Chart.js 캔버스 영역 -->
+            <div class="chart-wrapper" id="chartWrapper">
+                <canvas id="resultChart"></canvas>
+            </div>
+
+            <!-- 결과 수치 테이블 -->
+            <div id="resultTableWrapper" class="table-responsive">
+                <table id="resultTable" class="data-table"></table>
+            </div>
+        </section>
+
+        <!-- 6단계: Gemini AI 해석 보고서 -->
+        <section id="explainSection" class="card hidden">
+            <div class="section-header">
+                <h2>📑 6단계: Gemini 통계 해석 보고서</h2>
+                <div class="mode-toggle">
+                    <label class="radio-label">
+                        <input type="radio" name="explainMode" value="B" checked />
+                        <strong>모드 B (정식: 계산 결과 엄격 해석)</strong>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="explainMode" value="A" />
+                        <span>모드 A (비교용: 계산값 없이 AI 추정)</span>
+                    </label>
+                </div>
+            </div>
+
+            <button id="btnRequestExplain" class="btn btn-primary">해석 보고서 생성</button>
+
+            <div id="explainLoading" class="loading hidden">
+                <div class="spinner"></div> Gemini 보고서 작성 중...
+            </div>
+
+            <!-- 생성된 보고서 표시 영역 -->
+            <div id="reportBox" class="report-box hidden"></div>
+        </section>
+
+        <!-- 7단계: 💬 데이터 궁금증 Q&A 대화창 -->
+        <section id="chatSection" class="card hidden">
+            <div class="section-header">
+                <h2>💬 7단계: 데이터 궁금증 질문하기</h2>
+                <span class="subtitle" style="color:var(--text-muted);">분석 결과에 대해 무엇이든 편하게 물어보세요!</span>
+            </div>
+
+            <!-- 빠른 질문 추천 칩 -->
+            <div class="quick-questions">
+                <span class="quick-title">추천 질문:</span>
+                <button class="quick-btn" data-q="한국 순위는 왜 13위이고, 우리나라 공식 통계(94.5%)랑 왜 차이가 나나요?">🇰🇷 한국 순위와 정부 통계 차이점은?</button>
+                <button class="quick-btn" data-q="상위 국가들 인터넷 이용률이 100%가 나오는 게 현실적으로 가능한가요?">🏆 100%가 나오는 이유는?</button>
+                <button class="quick-btn" data-q="이 데이터에서 주의해야 할 함정(집계 행, 연도 차이 등)은 무엇인가요?">⚠️ 데이터 볼 때 주의할 점은?</button>
+                <button class="quick-btn" data-q="이 결과를 중학생도 이해하기 쉽게 세 줄로 요약해줘.">📝 초보자 눈높이 3줄 요약</button>
+            </div>
+
+            <!-- 대화 메시지 목록 -->
+            <div id="chatMessages" class="chat-messages">
+                <div class="chat-bubble ai">
+                    안녕하세요! 분석된 데이터와 계산 결과에 대해 궁금한 점이 있으신가요? "한국은 몇 등이야?", "이 숫자가 왜 이래?" 처럼 편하게 질문해 주시면 쉽게 설명해 드릴게요. 😊
+                </div>
+            </div>
+
+            <!-- 질문 입력창 -->
+            <div class="chat-input-row">
+                <input type="text" id="chatInput" class="form-control" placeholder="궁금한 내용을 물어보세요... (예: 한국은 몇 등이고 왜 그래?)" />
+                <button id="btnSendQuestion" class="btn btn-primary">질문하기</button>
+            </div>
+            <div id="chatLoading" class="loading hidden" style="padding-top:8px;">
+                <div class="spinner"></div> 데이터 과외 선생님이 답변을 작성 중입니다...
+            </div>
+
+            <script>
+                (function() {
+                    function sendChat() {
+                        const input = document.getElementById('chatInput');
+                        const text = input ? input.value.trim() : '';
+                        if (!text) return;
+                        execChat(text);
+                    }
+
+                    function execChat(question) {
+                        const box = document.getElementById('chatMessages');
+                        const input = document.getElementById('chatInput');
+                        const loading = document.getElementById('chatLoading');
+
+                        // 사용자 말풍선 추가
+                        const userBubble = document.createElement('div');
+                        userBubble.className = 'chat-bubble user';
+                        userBubble.textContent = question;
+                        box.appendChild(userBubble);
+                        if (input) input.value = '';
+                        box.scrollTop = box.scrollHeight;
+
+                        if (loading) loading.classList.remove('hidden');
+
+                        fetch('/ask', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ question: question })
+                        })
+                        .then(r => r.json())
+                        .then(d => {
+                            if (loading) loading.classList.add('hidden');
+                            const aiBubble = document.createElement('div');
+                            aiBubble.className = 'chat-bubble ai';
+                            aiBubble.innerHTML = (d.answer || d.error || '답변을 불러오지 못했습니다.').replace(/\n/g, '<br>');
+                            box.appendChild(aiBubble);
+                            box.scrollTop = box.scrollHeight;
+                        })
+                        .catch(err => {
+                            if (loading) loading.classList.add('hidden');
+                            const aiBubble = document.createElement('div');
+                            aiBubble.className = 'chat-bubble ai';
+                            aiBubble.textContent = '⚠️ 오류 발생: ' + err.message;
+                            box.appendChild(aiBubble);
+                            box.scrollTop = box.scrollHeight;
+                        });
+                    }
+
+                    const btn = document.getElementById('btnSendQuestion');
+                    if (btn) btn.addEventListener('click', sendChat);
+
+                    const input = document.getElementById('chatInput');
+                    if (input) {
+                        input.addEventListener('keydown', function(e) {
+                            if (e.key === 'Enter') {
+                                e.preventDefault();
+                                sendChat();
+                            }
+                        });
+                    }
+
+                    document.querySelectorAll('.quick-btn').forEach(qb => {
+                        qb.addEventListener('click', function() {
+                            const q = this.getAttribute('data-q');
+                            if (q) execChat(q);
+                        });
+                    });
+                })();
+            </script>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2026 AI Data Insight Builder &bull; Built with Flask, Pandas, Vanilla JS & Gemini</p>
+    </footer>
+
+    <!-- 프론트엔드 로직 스크립트 (캐시 방지 v=4) -->
+    <script src="/static/app.js?v=4"></script>
+</body>
+</html>
