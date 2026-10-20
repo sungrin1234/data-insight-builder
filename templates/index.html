@@ -6,7 +6,7 @@
     <title>AI Data Insight Builder</title>
     <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="/static/style.css?v=8">
+    <link rel="stylesheet" href="/static/style.css?v=9">
 
     <!-- PWA 설정 (Progressive Web App) -->
     <link rel="manifest" href="/manifest.json">
@@ -72,7 +72,101 @@
 
     <script>
         // ==========================================
-        // 🎆 Cyberpunk Spectacular Unlock FX Engine (Canvas Particles & EMP Waves)
+        // 🔊 Pure Web Audio API Sci-Fi Synthesizer Engine (Zero External Audio Files)
+        // ==========================================
+        class CyberAudioFX {
+            constructor() {
+                this.ctx = null;
+            }
+
+            init() {
+                if (!this.ctx) {
+                    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                    if (AudioCtx) this.ctx = new AudioCtx();
+                }
+                if (this.ctx && this.ctx.state === 'suspended') {
+                    this.ctx.resume();
+                }
+            }
+
+            playUnlockSupernova() {
+                try {
+                    this.init();
+                    if (!this.ctx) return;
+                    const now = this.ctx.currentTime;
+
+                    // 1. Mechanical cyber latch click (0 ~ 0.05s)
+                    const clickOsc = this.ctx.createOscillator();
+                    const clickGain = this.ctx.createGain();
+                    clickOsc.type = 'triangle';
+                    clickOsc.frequency.setValueAtTime(1400, now);
+                    clickOsc.frequency.exponentialRampToValueAtTime(320, now + 0.05);
+                    clickGain.gain.setValueAtTime(0.35, now);
+                    clickGain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+                    clickOsc.connect(clickGain);
+                    clickGain.connect(this.ctx.destination);
+                    clickOsc.start(now);
+                    clickOsc.stop(now + 0.055);
+
+                    // 2. Rising Hyperspace Plasma Sweep (0 ~ 0.22s)
+                    const plasmaOsc = this.ctx.createOscillator();
+                    const plasmaGain = this.ctx.createGain();
+                    plasmaOsc.type = 'sine';
+                    plasmaOsc.frequency.setValueAtTime(180, now);
+                    plasmaOsc.frequency.exponentialRampToValueAtTime(880, now + 0.22);
+                    plasmaGain.gain.setValueAtTime(0.01, now);
+                    plasmaGain.gain.linearRampToValueAtTime(0.3, now + 0.15);
+                    plasmaGain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+                    plasmaOsc.connect(plasmaGain);
+                    plasmaGain.connect(this.ctx.destination);
+                    plasmaOsc.start(now);
+                    plasmaOsc.stop(now + 0.26);
+
+                    // 3. Sub-bass EMP Shockwave Impact Boom (0.15 ~ 0.9s)
+                    const bassOsc = this.ctx.createOscillator();
+                    const bassGain = this.ctx.createGain();
+                    bassOsc.type = 'sawtooth';
+                    bassOsc.frequency.setValueAtTime(115, now + 0.15);
+                    bassOsc.frequency.exponentialRampToValueAtTime(26, now + 0.85);
+
+                    const bassFilter = this.ctx.createBiquadFilter();
+                    bassFilter.type = 'lowpass';
+                    bassFilter.frequency.setValueAtTime(300, now + 0.15);
+                    bassFilter.frequency.exponentialRampToValueAtTime(45, now + 0.85);
+
+                    bassGain.gain.setValueAtTime(0.001, now);
+                    bassGain.gain.setValueAtTime(0.55, now + 0.16);
+                    bassGain.gain.exponentialRampToValueAtTime(0.001, now + 0.9);
+
+                    bassOsc.connect(bassFilter);
+                    bassFilter.connect(bassGain);
+                    bassGain.connect(this.ctx.destination);
+                    bassOsc.start(now + 0.15);
+                    bassOsc.stop(now + 0.92);
+
+                    // 4. Crystal Victory Cyber Chimes (Pentatonic arpeggio 5 notes)
+                    const notes = [587.33, 739.99, 880.00, 1174.66, 1479.98]; // D5, F#5, A5, D6, F#6
+                    notes.forEach((freq, idx) => {
+                        const noteTime = now + 0.22 + idx * 0.08;
+                        const osc = this.ctx.createOscillator();
+                        const gain = this.ctx.createGain();
+                        osc.type = 'sine';
+                        osc.frequency.setValueAtTime(freq, noteTime);
+                        gain.gain.setValueAtTime(0.22, noteTime);
+                        gain.gain.exponentialRampToValueAtTime(0.001, noteTime + 0.55);
+                        osc.connect(gain);
+                        gain.connect(this.ctx.destination);
+                        osc.start(noteTime);
+                        osc.stop(noteTime + 0.6);
+                    });
+                } catch (e) {
+                    console.warn('[AUDIO] Cyber sound error ignored:', e);
+                }
+            }
+        }
+
+        // ==========================================
+        // 🎆 Pinnacle Cyberpunk Unlock FX Engine (300+ Particles, Warp Tunnel, Rotating HUD)
         // ==========================================
         class CyberUnlockFX {
             constructor(canvas) {
@@ -80,6 +174,8 @@
                 this.ctx = canvas.getContext('2d');
                 this.particles = [];
                 this.shockwaves = [];
+                this.warpRays = [];
+                this.hudRings = [];
                 this.animId = null;
                 this.resize();
                 window.addEventListener('resize', () => this.resize());
@@ -90,55 +186,174 @@
                 this.h = this.canvas.height = window.innerHeight;
             }
 
-            blast(originX, originY) {
-                this.resize();
-                this.particles = [];
-                this.shockwaves = [];
-
-                // 1. Concentric EMP Shockwave Laser Rings (4 Waves)
-                const waveColors = ['#00f0ff', '#ff007f', '#00ff9d', '#ffffff'];
-                for (let i = 0; i < 4; i++) {
-                    this.shockwaves.push({
-                        x: originX,
-                        y: originY,
-                        radius: 12 + i * 16,
-                        maxRadius: Math.max(this.w, this.h) * 0.95,
-                        speed: 15 + i * 7,
-                        lineWidth: 6 - i * 1.1,
-                        color: waveColors[i % waveColors.length],
-                        alpha: 1,
-                        decay: 0.02 - i * 0.003
-                    });
-                }
-
-                // 2. High-energy Neon Sparks & Shards (120 particles)
-                const colors = ['#00f0ff', '#38bdf8', '#ff007f', '#ff70a6', '#00ff9d', '#fcee0a', '#ffffff'];
-                for (let i = 0; i < 120; i++) {
+            spawnParticles(cx, cy, count, speedMax, colors) {
+                for (let i = 0; i < count; i++) {
                     const angle = Math.random() * Math.PI * 2;
-                    const speed = 4 + Math.random() * 24;
+                    const speed = 3 + Math.random() * speedMax;
                     this.particles.push({
-                        x: originX,
-                        y: originY,
+                        x: cx,
+                        y: cy,
                         vx: Math.cos(angle) * speed,
                         vy: Math.sin(angle) * speed,
                         size: 2.5 + Math.random() * 5.5,
                         color: colors[Math.floor(Math.random() * colors.length)],
                         alpha: 1,
-                        decay: 0.012 + Math.random() * 0.018,
+                        decay: 0.012 + Math.random() * 0.016,
                         friction: 0.965,
-                        gravity: 0.22,
+                        gravity: 0.2,
                         rotation: Math.random() * Math.PI * 2,
                         rotSpeed: (Math.random() - 0.5) * 0.35,
                         type: Math.random() > 0.4 ? 'spark' : (Math.random() > 0.5 ? 'diamond' : 'streak')
                     });
                 }
+            }
+
+            blast(originX, originY) {
+                this.resize();
+                this.particles = [];
+                this.shockwaves = [];
+                this.warpRays = [];
+                this.hudRings = [];
+
+                // 1. Concentric EMP Shockwave Laser Rings (6 Waves)
+                const waveColors = ['#ffffff', '#00f0ff', '#ff007f', '#00ff9d', '#fcee0a', '#a855f7'];
+                for (let i = 0; i < 6; i++) {
+                    this.shockwaves.push({
+                        x: originX,
+                        y: originY,
+                        radius: 10 + i * 14,
+                        maxRadius: Math.max(this.w, this.h) * 1.05,
+                        speed: 16 + i * 6.5,
+                        lineWidth: 6 - i * 0.8,
+                        color: waveColors[i % waveColors.length],
+                        alpha: 1,
+                        decay: 0.018 - i * 0.002
+                    });
+                }
+
+                // 2. Light-speed Warp Rays (75 speed streak beams radiating outwards)
+                const rayColors = ['#00f0ff', '#38bdf8', '#00ff9d', '#ffffff', '#ff007f'];
+                for (let i = 0; i < 75; i++) {
+                    const angle = Math.random() * Math.PI * 2;
+                    const speed = 18 + Math.random() * 32;
+                    this.warpRays.push({
+                        x: originX,
+                        y: originY,
+                        angle: angle,
+                        length: 20 + Math.random() * 60,
+                        speed: speed,
+                        dist: 25 + Math.random() * 40,
+                        color: rayColors[Math.floor(Math.random() * rayColors.length)],
+                        lineWidth: 1.5 + Math.random() * 2.5,
+                        alpha: 1,
+                        decay: 0.016 + Math.random() * 0.014
+                    });
+                }
+
+                // 3. Rotating Holographic Sci-Fi HUD Radar Reticles
+                this.hudRings.push({
+                    x: originX,
+                    y: originY,
+                    radius: 70,
+                    angle: 0,
+                    angleSpeed: 0.06,
+                    color: '#00f0ff',
+                    alpha: 1,
+                    decay: 0.012,
+                    segments: 8,
+                    dashLen: 16
+                });
+                this.hudRings.push({
+                    x: originX,
+                    y: originY,
+                    radius: 110,
+                    angle: 0,
+                    angleSpeed: -0.045,
+                    color: '#00ff9d',
+                    alpha: 1,
+                    decay: 0.011,
+                    segments: 6,
+                    dashLen: 24
+                });
+
+                // 4. Primary Supernova Sparks & Neon Shards (300 particles)
+                const mainColors = ['#00f0ff', '#38bdf8', '#ff007f', '#ff70a6', '#00ff9d', '#fcee0a', '#ffffff'];
+                this.spawnParticles(originX, originY, 300, 26, mainColors);
+
+                // 5. Secondary Satellite Bursts (3 mini-fireworks timed at +140ms, +220ms, +300ms)
+                setTimeout(() => {
+                    this.spawnParticles(originX - 110, originY - 70, 45, 14, ['#00ff9d', '#fcee0a', '#ffffff']);
+                }, 140);
+                setTimeout(() => {
+                    this.spawnParticles(originX + 115, originY - 80, 45, 14, ['#ff007f', '#00f0ff', '#ffffff']);
+                }, 220);
+                setTimeout(() => {
+                    this.spawnParticles(originX, originY + 90, 50, 16, ['#38bdf8', '#00ff9d', '#fcee0a']);
+                }, 300);
 
                 if (this.animId) cancelAnimationFrame(this.animId);
 
                 const render = () => {
                     this.ctx.clearRect(0, 0, this.w, this.h);
 
-                    // Render Shockwaves
+                    // 1. Render Hyperspace Warp Rays
+                    for (let i = this.warpRays.length - 1; i >= 0; i--) {
+                        const r = this.warpRays[i];
+                        r.dist += r.speed;
+                        r.length += r.speed * 0.45;
+                        r.alpha -= r.decay;
+
+                        if (r.alpha <= 0) {
+                            this.warpRays.splice(i, 1);
+                            continue;
+                        }
+
+                        const startX = r.x + Math.cos(r.angle) * r.dist;
+                        const startY = r.y + Math.sin(r.angle) * r.dist;
+                        const endX = r.x + Math.cos(r.angle) * (r.dist + r.length);
+                        const endY = r.y + Math.sin(r.angle) * (r.dist + r.length);
+
+                        this.ctx.save();
+                        this.ctx.beginPath();
+                        this.ctx.moveTo(startX, startY);
+                        this.ctx.lineTo(endX, endY);
+                        this.ctx.strokeStyle = r.color;
+                        this.ctx.lineWidth = r.lineWidth;
+                        this.ctx.globalAlpha = Math.max(0, r.alpha);
+                        this.ctx.shadowBlur = 15;
+                        this.ctx.shadowColor = r.color;
+                        this.ctx.stroke();
+                        this.ctx.restore();
+                    }
+
+                    // 2. Render Rotating Holographic HUD Reticles
+                    for (let i = this.hudRings.length - 1; i >= 0; i--) {
+                        const hr = this.hudRings[i];
+                        hr.angle += hr.angleSpeed;
+                        hr.radius += 1.8;
+                        hr.alpha -= hr.decay;
+
+                        if (hr.alpha <= 0) {
+                            this.hudRings.splice(i, 1);
+                            continue;
+                        }
+
+                        this.ctx.save();
+                        this.ctx.translate(hr.x, hr.y);
+                        this.ctx.rotate(hr.angle);
+                        this.ctx.strokeStyle = hr.color;
+                        this.ctx.lineWidth = 2.2;
+                        this.ctx.globalAlpha = Math.max(0, hr.alpha);
+                        this.ctx.shadowBlur = 20;
+                        this.ctx.shadowColor = hr.color;
+                        this.ctx.setLineDash([hr.dashLen, 12]);
+                        this.ctx.beginPath();
+                        this.ctx.arc(0, 0, hr.radius, 0, Math.PI * 2);
+                        this.ctx.stroke();
+                        this.ctx.restore();
+                    }
+
+                    // 3. Render Shockwaves
                     for (let i = this.shockwaves.length - 1; i >= 0; i--) {
                         const sw = this.shockwaves[i];
                         sw.radius += sw.speed;
@@ -155,13 +370,13 @@
                         this.ctx.strokeStyle = sw.color;
                         this.ctx.globalAlpha = Math.max(0, sw.alpha);
                         this.ctx.lineWidth = sw.lineWidth;
-                        this.ctx.shadowBlur = 24;
+                        this.ctx.shadowBlur = 26;
                         this.ctx.shadowColor = sw.color;
                         this.ctx.stroke();
                         this.ctx.restore();
                     }
 
-                    // Render Particles
+                    // 4. Render Particles
                     for (let i = this.particles.length - 1; i >= 0; i--) {
                         const p = this.particles[i];
                         p.x += p.vx;
@@ -181,7 +396,7 @@
                         this.ctx.rotate(p.rotation);
                         this.ctx.globalAlpha = Math.max(0, p.alpha);
                         this.ctx.fillStyle = p.color;
-                        this.ctx.shadowBlur = 16;
+                        this.ctx.shadowBlur = 18;
                         this.ctx.shadowColor = p.color;
 
                         if (p.type === 'diamond') {
@@ -202,7 +417,7 @@
                         this.ctx.restore();
                     }
 
-                    if (this.particles.length > 0 || this.shockwaves.length > 0) {
+                    if (this.particles.length > 0 || this.shockwaves.length > 0 || this.warpRays.length > 0 || this.hudRings.length > 0) {
                         this.animId = requestAnimationFrame(render);
                     } else {
                         this.ctx.clearRect(0, 0, this.w, this.h);
@@ -233,6 +448,7 @@
 
             const SECRET_PIN = "7890";
             const unlockFX = new CyberUnlockFX(fxCanvas);
+            const audioFX = new CyberAudioFX();
 
             // 세션 동안 잠금 해제 상태 유지
             if (sessionStorage.getItem('site_unlocked_7890') === 'true') {
@@ -248,20 +464,27 @@
                     errorMsg.classList.add('hidden');
                     input.blur();
 
-                    // 1. 자물쇠 중심 좌표 측정 (파티클 & 충격파 폭발 진원지)
+                    // 1. 자물쇠 중심 좌표 측정 (대폭발 진원지)
                     const lockRect = lockSvg.getBoundingClientRect();
                     const originX = lockRect.left + lockRect.width / 2;
                     const originY = lockRect.top + lockRect.height / 2;
 
-                    // 2. ⚡ 순간 퀀텀 에너지 스크린 플래시 방출!
-                    flashEl.classList.remove('flash-active');
-                    void flashEl.offsetWidth;
-                    flashEl.classList.add('flash-active');
+                    // 2. 🔊 사이버 신디사이저 사운드 폭발 (래치 팝 + 플라즈마 스윕 + 서브베이스 붐 + 크리스탈 팡파르)
+                    audioFX.playUnlockSupernova();
 
-                    // 3. 🎆 120개 고에너지 네온 파티클 & 다중 EMP 레이저 충격파 대폭발!
+                    // 3. 💥 화면 전체 스크린 퀘이크 & 레인보우 에너지 플래시
+                    overlay.classList.remove('screen-quake');
+                    void overlay.offsetWidth;
+                    overlay.classList.add('screen-quake');
+
+                    flashEl.classList.remove('flash-active', 'hyper-flash');
+                    void flashEl.offsetWidth;
+                    flashEl.classList.add('hyper-flash');
+
+                    // 4. 🎆 300+ 네온 파티클, 워프 터널, 회전 HUD 레이더, 다중 EMP 충격파 대폭발!
                     unlockFX.blast(originX, originY);
 
-                    // 4. 자물쇠 물리적 변형 & 네온 아우라 만개
+                    // 5. 자물쇠 물리 변형 & 네온 아우라 만개
                     shackle.classList.add('shackle-open');
                     lockSvg.classList.add('svg-unlocked');
                     lockBody.setAttribute('fill', 'url(#lockSuccessGrad)');
@@ -272,32 +495,32 @@
                         r.classList.add('wave-active');
                     });
 
-                    // 5. HUD 상태 배지 & 타이틀 웅장한 사이버펑크 전환
-                    hudBadge.textContent = '⚡ ACCESS GRANTED 100%';
+                    // 6. HUD 상태 배지 & 타이틀 궁극의 사이버펑크 변환
+                    hudBadge.textContent = '⚡ ACCESS GRANTED // OVERDRIVE 100%';
                     hudBadge.classList.add('granted');
                     title.textContent = '⚡ ACCESS GRANTED // 해제 성공';
                     title.style.color = '#00ff9d';
-                    title.style.textShadow = '0 0 24px rgba(0, 255, 157, 0.8), 0 0 10px #00f0ff';
-                    subtitle.textContent = '[DECRYPTED 100% // ALL PROTOCOLS ONLINE]';
+                    title.style.textShadow = '0 0 28px rgba(0, 255, 157, 0.9), 0 0 12px #00f0ff';
+                    subtitle.textContent = '[DECRYPTED 100% // ALL NEURAL PROTOCOLS ONLINE]';
                     subtitle.style.color = '#38bdf8';
-                    subtitle.style.textShadow = '0 0 12px rgba(56, 189, 248, 0.5)';
+                    subtitle.style.textShadow = '0 0 16px rgba(56, 189, 248, 0.6)';
                     btnText.textContent = '🚀 대시보드 시스템 접속 중...';
 
-                    card.classList.add('card-unlocked-epic');
+                    card.classList.add('hyper-unlocked');
 
-                    // 6. 워프 스케일 페이드아웃 (시네마틱 퇴장)
+                    // 7. 워프 스케일 페이드아웃 (시네마틱 퇴장)
                     setTimeout(() => {
                         overlay.classList.add('overlay-fadeout-epic');
                         sessionStorage.setItem('site_unlocked_7890', 'true');
                         setTimeout(() => {
                             overlay.style.display = 'none';
-                            overlay.classList.remove('overlay-fadeout-epic');
+                            overlay.classList.remove('overlay-fadeout-epic', 'screen-quake');
                             // 리셋
                             shackle.classList.remove('shackle-open');
                             lockSvg.classList.remove('svg-unlocked');
                             ripple.classList.remove('ripple-active');
                             rings.forEach(r => r.classList.remove('wave-active'));
-                            card.classList.remove('card-unlocked-epic');
+                            card.classList.remove('hyper-unlocked', 'card-unlocked-epic');
                             hudBadge.classList.remove('granted');
                             hudBadge.textContent = 'SYSTEM SECURITY PROTOCOL';
                             lockBody.setAttribute('fill', 'url(#lockBodyGrad)');
@@ -310,7 +533,7 @@
                             btnText.textContent = '🔓 잠금 해제';
                             input.value = '';
                         }, 800);
-                    }, 850);
+                    }, 950);
 
                 } else {
                     // 비밀번호 불일치: 카드 진동(Shake) & 오류 메시지
