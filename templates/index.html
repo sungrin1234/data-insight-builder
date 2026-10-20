@@ -6,7 +6,7 @@
     <title>AI Data Insight Builder</title>
     <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="/static/style.css?v=5">
+    <link rel="stylesheet" href="/static/style.css?v=6">
 
     <!-- PWA 설정 (Progressive Web App) -->
     <link rel="manifest" href="/manifest.json">
@@ -419,8 +419,8 @@
             <p class="desc">BOM, 인코딩(UTF-8, CP949 등), 상단 안내문(Skiprows)을 자동으로 감지합니다.</p>
             
             <div class="upload-box" id="dropZone" style="cursor: default;">
-                <input type="file" id="csvFileInput" accept=".csv" style="display:block !important; margin: 0 auto 12px auto; padding: 10px; font-size: 15px; border: 1px solid #94a3b8; border-radius: 6px; background: #fff;" />
-                <span id="selectedFileName" class="file-name" style="display:block; margin-bottom: 12px; font-weight: 600;">선택된 파일 없음</span>
+                <input type="file" id="csvFileInput" accept=".csv" />
+                <span id="selectedFileName" class="file-name" style="display:block; margin-bottom: 12px; font-weight: 600; color: #94a3b8;">선택된 파일 없음</span>
                 <button type="button" id="btnStartInspect" class="btn btn-primary" style="font-size: 1.05rem; padding: 12px 28px; cursor: pointer; z-index: 100; position: relative;">🚀 분석 및 진단 시작하기</button>
             </div>
 
@@ -433,7 +433,7 @@
                     const fn = document.getElementById('selectedFileName');
                     if (e.target.files && e.target.files[0]) {
                         fn.textContent = '✅ 선택 완료: ' + e.target.files[0].name + ' (' + (e.target.files[0].size/1024).toFixed(1) + ' KB)';
-                        fn.style.color = '#059669';
+                        fn.style.color = '#00ff9d';
                     }
                 });
 
@@ -557,7 +557,7 @@
 
             <!-- 빠른 예시 질문 버튼들 -->
             <div class="quick-questions" style="margin-bottom: 14px; display: flex; flex-wrap: wrap; gap: 8px;">
-                <span class="quick-title" style="align-self: center; font-weight: 600; color: #475569;">추천 질문:</span>
+                <span class="quick-title" style="align-self: center; font-weight: 700;">추천 질문:</span>
                 <button type="button" class="quick-viz-btn" data-q="2024년 세계 1-10등까지 순위 국가와 대한민국을 함께 비교해줘">🔥 2024년 1~10위 & 대한민국 비교</button>
                 <button type="button" class="quick-viz-btn" data-q="한국의 연도별 추세를 선그래프로 보여줘">📈 한국 연도별 추세 (선 그래프)</button>
                 <button type="button" class="quick-viz-btn" data-q="미국과 중국의 인터넷 이용률 추이를 비교해줘">⚔️ 미국 vs 중국 추이 비교</button>
@@ -577,15 +577,15 @@
             </div>
 
             <!-- 답변 및 시각화 결과 컨테이너 -->
-            <div id="askVizResultBox" class="hidden" style="margin-top: 16px; background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; padding: 20px;">
-                <div id="askVizAnswerText" style="font-size: 0.96rem; line-height: 1.7; color: #1e293b; margin-bottom: 16px;"></div>
+            <div id="askVizResultBox" class="ask-viz-result-box hidden">
+                <div id="askVizAnswerText" class="ask-viz-answer-text"></div>
 
                 <!-- 스마트 시각화 버튼 생성 영역 -->
                 <div id="askVizButtonArea" style="margin-bottom: 16px;"></div>
 
                 <!-- 동적 차트 캔버스 영역 -->
-                <div id="askVizChartContainer" class="hidden" style="background:#fff; padding:16px; border-radius:8px; border:1px solid var(--border);">
-                    <h3 id="askVizChartTitle" style="font-size: 1rem; margin-bottom: 12px; color: #334155; font-weight: 600;"></h3>
+                <div id="askVizChartContainer" class="ask-viz-chart-container hidden">
+                    <h3 id="askVizChartTitle" class="ask-viz-chart-title"></h3>
                     <div style="position: relative; height: 440px;">
                         <canvas id="askVizCanvas"></canvas>
                     </div>
@@ -597,14 +597,20 @@
                     let vizChartInstance = null;
                     let currentChartPayload = null;
 
+                    // Chart.js 다크/사이버펑크 테마 기본값 설정
+                    if (typeof Chart !== 'undefined') {
+                        Chart.defaults.color = '#94a3b8';
+                        Chart.defaults.borderColor = 'rgba(148, 163, 184, 0.15)';
+                    }
+
                     function formatMarkdown(text) {
                         if (!text) return '';
                         return text
-                            .replace(/^### (.*$)/gim, '<h3 style="font-size:1.1rem; margin-top:14px; margin-bottom:8px; color:#1e293b; font-weight:700;">$1</h3>')
-                            .replace(/^## (.*$)/gim, '<h2 style="font-size:1.2rem; margin-top:16px; margin-bottom:10px; color:#0f172a; font-weight:700;">$1</h2>')
-                            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                            .replace(/^- (.*$)/gim, '<div style="margin-left:14px; margin-bottom:4px; line-height:1.6;">• $1</div>')
-                            .replace(/\n\n/g, '<div style="margin-bottom:10px;"></div>')
+                            .replace(/^### (.*$)/gim, '<h3 class="cyber-md-h3">$1</h3>')
+                            .replace(/^## (.*$)/gim, '<h2 class="cyber-md-h2">$1</h2>')
+                            .replace(/\*\*(.*?)\*\*/g, '<strong class="cyber-md-strong">$1</strong>')
+                            .replace(/^- (.*$)/gim, '<div class="cyber-md-li">• $1</div>')
+                            .replace(/\n\n/g, '<div style="margin-bottom:12px;"></div>')
                             .replace(/\n/g, '<br>');
                     }
 
@@ -644,7 +650,7 @@
                             if (currentChartPayload && currentChartPayload.chart_data) {
                                 const vizBtn = document.createElement('button');
                                 vizBtn.className = 'btn btn-primary';
-                                vizBtn.style.cssText = 'background: linear-gradient(135deg, #2563eb, #1d4ed8); font-size: 0.98rem; font-weight:600; padding: 12px 24px; box-shadow: 0 4px 10px rgba(37,99,235,0.25); border-radius: 8px; cursor: pointer;';
+                                vizBtn.style.cssText = 'font-size: 0.98rem; padding: 12px 24px; cursor: pointer;';
                                 vizBtn.innerHTML = (data.chart_title || '📊 맞춤형 시각화 그래프 보기') + ' &darr;';
                                 
                                 vizBtn.addEventListener('click', function() {
