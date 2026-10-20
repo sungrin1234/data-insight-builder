@@ -9,11 +9,144 @@
     <link rel="stylesheet" href="/static/style.css?v=2">
 </head>
 <body>
+    <!-- 사이트 비밀번호 잠금화면 오버레이 (비밀번호: 7890) -->
+    <div id="authLockOverlay" class="auth-lock-overlay">
+        <div class="lock-card" id="lockCard">
+            <!-- 잠금해제 애니메이션용 물리적 SVG 자물쇠 -->
+            <div class="lock-icon-container" id="lockIconContainer">
+                <div class="lock-ripple" id="lockRipple"></div>
+                <svg class="lock-svg" viewBox="0 0 64 64" width="76" height="76">
+                    <defs>
+                        <linearGradient id="lockBodyGrad" x1="0" y1="0" x2="1" y2="1">
+                            <stop offset="0%" stop-color="#3b82f6"/>
+                            <stop offset="100%" stop-color="#1d4ed8"/>
+                        </linearGradient>
+                        <linearGradient id="lockSuccessGrad" x1="0" y1="0" x2="1" y2="1">
+                            <stop offset="0%" stop-color="#10b981"/>
+                            <stop offset="100%" stop-color="#059669"/>
+                        </linearGradient>
+                    </defs>
+                    <!-- 자물쇠 고리 (Shackle) -->
+                    <path id="lockShackle" class="lock-shackle" d="M23 28 V19 A9 9 0 0 1 41 19 V28" fill="none" stroke="#93c5fd" stroke-width="5" stroke-linecap="round"/>
+                    <!-- 자물쇠 몸체 -->
+                    <rect id="lockBody" x="14" y="27" width="36" height="29" rx="7" fill="url(#lockBodyGrad)" stroke="#60a5fa" stroke-width="1.5"/>
+                    <!-- 열쇠구멍 -->
+                    <circle cx="32" cy="39" r="3.2" fill="#0f172a"/>
+                    <polygon points="30,41 34,41 33.2,48 30.8,48" fill="#0f172a"/>
+                </svg>
+            </div>
+
+            <h2 class="lock-title" id="lockTitle">보안 잠금 해제</h2>
+            <p class="lock-subtitle" id="lockSubtitle">사이트에 접속하려면 4자리 비밀번호를 입력해 주세요.</p>
+
+            <form id="lockForm" class="lock-form" onsubmit="return false;">
+                <div class="lock-input-wrapper">
+                    <input type="password" id="sitePasswordInput" class="lock-input" maxlength="8" placeholder="••••" autocomplete="off" autofocus />
+                </div>
+                <div id="lockErrorMsg" class="lock-error-msg hidden"></div>
+                <button type="submit" id="btnUnlockSite" class="btn-unlock">
+                    <span id="btnUnlockText">🔓 잠금 해제</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const overlay = document.getElementById('authLockOverlay');
+            const form = document.getElementById('lockForm');
+            const input = document.getElementById('sitePasswordInput');
+            const card = document.getElementById('lockCard');
+            const shackle = document.getElementById('lockShackle');
+            const lockBody = document.getElementById('lockBody');
+            const ripple = document.getElementById('lockRipple');
+            const errorMsg = document.getElementById('lockErrorMsg');
+            const btnText = document.getElementById('btnUnlockText');
+            const title = document.getElementById('lockTitle');
+            const subtitle = document.getElementById('lockSubtitle');
+
+            const SECRET_PIN = "7890";
+
+            // 세션 동안 잠금 해제 상태 유지
+            if (sessionStorage.getItem('site_unlocked_7890') === 'true') {
+                overlay.style.display = 'none';
+            } else {
+                overlay.style.display = 'flex';
+                setTimeout(() => input && input.focus(), 200);
+            }
+
+            function unlockSite() {
+                const entered = input.value.trim();
+                if (entered === SECRET_PIN) {
+                    errorMsg.classList.add('hidden');
+                    input.blur();
+
+                    // 1. 잠금 해제 애니메이션 가동!
+                    shackle.classList.add('shackle-open');
+                    lockBody.setAttribute('fill', 'url(#lockSuccessGrad)');
+                    ripple.classList.add('ripple-active');
+
+                    // 2. 텍스트 & 상태 전환
+                    title.textContent = '✨ 잠금 해제 성공!';
+                    title.style.color = '#34d399';
+                    subtitle.textContent = '인증이 완료되었습니다. 대시보드로 이동합니다.';
+                    btnText.textContent = '✅ 접속 중...';
+
+                    card.classList.add('card-unlocked');
+
+                    // 3. 부드러운 오버레이 페이드아웃 퇴장
+                    setTimeout(() => {
+                        overlay.classList.add('overlay-fadeout');
+                        sessionStorage.setItem('site_unlocked_7890', 'true');
+                        setTimeout(() => {
+                            overlay.style.display = 'none';
+                            overlay.classList.remove('overlay-fadeout');
+                            // 리셋
+                            shackle.classList.remove('shackle-open');
+                            ripple.classList.remove('ripple-active');
+                            card.classList.remove('card-unlocked');
+                            lockBody.setAttribute('fill', 'url(#lockBodyGrad)');
+                            title.textContent = '보안 잠금 해제';
+                            title.style.color = '#ffffff';
+                            subtitle.textContent = '사이트에 접속하려면 4자리 비밀번호를 입력해 주세요.';
+                            btnText.textContent = '🔓 잠금 해제';
+                            input.value = '';
+                        }, 650);
+                    }, 550);
+
+                } else {
+                    // 비밀번호 불일치: 카드 진동(Shake) & 오류 메시지
+                    errorMsg.textContent = '⚠️ 비밀번호가 올바르지 않습니다. 다시 입력해 주세요.';
+                    errorMsg.classList.remove('hidden');
+                    card.classList.remove('shake');
+                    void card.offsetWidth; // reflow
+                    card.classList.add('shake');
+                    input.value = '';
+                    input.focus();
+                }
+            }
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                unlockSite();
+            });
+
+            window.relockSite = function() {
+                sessionStorage.removeItem('site_unlocked_7890');
+                overlay.style.display = 'flex';
+                input.value = '';
+                errorMsg.classList.add('hidden');
+                setTimeout(() => input && input.focus(), 200);
+            };
+        })();
+    </script>
+
     <header class="header">
         <div class="header-container">
             <h1>🔬 AI Data Insight Builder</h1>
             <p class="subtitle">공식 데이터 진단 &bull; Pandas 정밀 계산 &bull; Gemini 통계 해석</p>
             <div class="header-controls">
+                <button type="button" class="btn-relock" onclick="window.relockSite()" title="화면 다시 잠그기">🔒 잠금</button>
                 <label class="autumn-switch" title="가을 단풍잎 모드 (ON/OFF)">
                     <input type="checkbox" id="autumnToggle">
                     <span class="autumn-slider">
