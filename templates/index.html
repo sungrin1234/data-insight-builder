@@ -6,7 +6,7 @@
     <title>AI Data Insight Builder</title>
     <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="/static/style.css?v=6">
+    <link rel="stylesheet" href="/static/style.css?v=7">
 
     <!-- PWA 설정 (Progressive Web App) -->
     <link rel="manifest" href="/manifest.json">
@@ -1054,6 +1054,29 @@
                 };
                 window.addEventListener('pointerup', cleanup);
                 window.addEventListener('pointercancel', cleanup);
+            });
+        })();
+
+        // ==========================================
+        // 🔦 Interactive Cyber Spotlight on Cards
+        // ==========================================
+        (function() {
+            let ticking = false;
+            document.addEventListener('mousemove', function(e) {
+                if (!ticking) {
+                    window.requestAnimationFrame(function() {
+                        const cards = document.querySelectorAll('.card');
+                        cards.forEach(card => {
+                            const rect = card.getBoundingClientRect();
+                            const x = e.clientX - rect.left;
+                            const y = e.clientY - rect.top;
+                            card.style.setProperty('--mouse-x', `${x}px`);
+                            card.style.setProperty('--mouse-y', `${y}px`);
+                        });
+                        ticking = false;
+                    });
+                    ticking = true;
+                }
             });
         })();
     </script>
