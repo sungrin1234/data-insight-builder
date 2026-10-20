@@ -89,6 +89,22 @@ def index():
     logger.info("[REQUEST] GET /")
     return render_template("index.html")
 
+@app.route("/manifest.json", methods=["GET"])
+def manifest():
+    """PWA 매니페스트 반환"""
+    response = app.make_response(app.send_static_file("manifest.json"))
+    response.headers["Content-Type"] = "application/manifest+json"
+    return response
+
+@app.route("/sw.js", methods=["GET"])
+def service_worker():
+    """PWA 서비스 워커 반환 (루트 스코프 적용을 위해 /sw.js 에서 직접 서빙)"""
+    response = app.make_response(app.send_static_file("sw.js"))
+    response.headers["Content-Type"] = "application/javascript"
+    response.headers["Service-Worker-Allowed"] = "/"
+    return response
+
+
 @app.route("/health", methods=["GET"])
 def health():
     """서버 상태 및 API Key 설정 여부 반환 (보안: 실제 키 값은 절대 노출 금지)"""

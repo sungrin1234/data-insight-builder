@@ -6,7 +6,17 @@
     <title>AI Data Insight Builder</title>
     <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="/static/style.css?v=2">
+    <link rel="stylesheet" href="/static/style.css?v=3">
+
+    <!-- PWA 설정 (Progressive Web App) -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#1e293b">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="DataInsight">
+    <link rel="apple-touch-icon" href="/static/icons/icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/icon-32x32.png">
 </head>
 <body>
     <!-- 사이트 비밀번호 잠금화면 오버레이 (비밀번호: 7890) -->
@@ -146,6 +156,10 @@
             <h1>🔬 AI Data Insight Builder</h1>
             <p class="subtitle">공식 데이터 진단 &bull; Pandas 정밀 계산 &bull; Gemini 통계 해석</p>
             <div class="header-controls">
+                <button type="button" id="btnInstallApp" class="btn-install-app" title="앱으로 설치하여 전체화면으로 사용">
+                    <span class="install-icon">📲</span>
+                    <span class="install-text">앱 설치</span>
+                </button>
                 <button type="button" class="btn-relock" onclick="window.relockSite()" title="화면 다시 잠그기">🔒 잠금</button>
                 <label class="autumn-switch" title="가을 단풍잎 모드 (ON/OFF)">
                     <input type="checkbox" id="autumnToggle">
@@ -912,5 +926,97 @@
 
     <!-- 프론트엔드 로직 스크립트 (캐시 방지 v=4) -->
     <script src="/static/app.js?v=4"></script>
+
+    <!-- PWA 설치 안내 모달 -->
+    <div id="pwaInstallModal" class="pwa-modal-overlay hidden" onclick="if(event.target===this) this.classList.add('hidden')">
+        <div class="pwa-modal-card">
+            <button type="button" class="pwa-modal-close" onclick="document.getElementById('pwaInstallModal').classList.add('hidden')">&times;</button>
+            <div class="pwa-modal-icon">📲</div>
+            <h3 class="pwa-modal-title">AI Data Insight Builder 앱 설치</h3>
+            <p class="pwa-modal-desc">독립형 PWA 앱으로 설치하여 언제든 빠르고 쾌적하게 전체 화면으로 이용해 보세요.</p>
+            <div class="pwa-guide-steps">
+                <div class="pwa-step-item">
+                    <span class="pwa-step-badge">💻 Chrome / Edge (PC)</span>
+                    <p>브라우저 주소창 오른쪽 끝의 <strong>설치 아이콘(⊕)</strong>을 클릭하거나, 메뉴 [설정 > 앱 > 이 사이트를 앱으로 설치]를 눌러주세요.</p>
+                </div>
+                <div class="pwa-step-item">
+                    <span class="pwa-step-badge">🍎 Safari (iOS / iPhone / iPad)</span>
+                    <p>하단 도구 모음의 <strong>공유 버튼</strong>(네모 위 화살표)을 탭한 후, 목록에서 <strong>'홈 화면에 추가'</strong>를 선택하세요.</p>
+                </div>
+                <div class="pwa-step-item">
+                    <span class="pwa-step-badge">🤖 Chrome (Android)</span>
+                    <p>우측 상단 메뉴(점 3개)를 터치한 후 <strong>'홈 화면에 추가'</strong> 또는 <strong>'앱 설치'</strong>를 선택하세요.</p>
+                </div>
+            </div>
+            <button type="button" class="btn-pwa-confirm" onclick="document.getElementById('pwaInstallModal').classList.add('hidden')">확인</button>
+        </div>
+    </div>
+
+    <!-- PWA Service Worker 및 설치 프롬프트 스크립트 -->
+    <script>
+        (function() {
+            // 1. Service Worker 등록
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', function() {
+                    navigator.serviceWorker.register('/sw.js', { scope: '/' })
+                        .then(function(reg) {
+                            console.log('[PWA] Service Worker 등록 성공 (Scope):', reg.scope);
+                        })
+                        .catch(function(err) {
+                            console.warn('[PWA] Service Worker 등록 실패:', err);
+                        });
+                });
+            }
+
+            // 2. 앱 설치 버튼 제어
+            const btnInstall = document.getElementById('btnInstallApp');
+            const modal = document.getElementById('pwaInstallModal');
+            let deferredPrompt = null;
+
+            // 이미 Standalone (설치된 앱) 상태인지 체크
+            const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+            if (isStandalone && btnInstall) {
+                btnInstall.innerHTML = '<span class="install-icon">✅</span><span class="install-text">앱 실행 중</span>';
+                btnInstall.disabled = true;
+                btnInstall.style.opacity = '0.75';
+            }
+
+            // beforeinstallprompt 이벤트 감지 (Chrome / Edge / Android)
+            window.addEventListener('beforeinstallprompt', function(e) {
+                e.preventDefault();
+                deferredPrompt = e;
+                if (btnInstall && !isStandalone) {
+                    btnInstall.classList.add('pulse');
+                }
+            });
+
+            if (btnInstall) {
+                btnInstall.addEventListener('click', async function() {
+                    if (isStandalone) return;
+
+                    if (deferredPrompt) {
+                        deferredPrompt.prompt();
+                        const choice = await deferredPrompt.userChoice;
+                        console.log('[PWA] 설치 선택 결과:', choice && choice.outcome);
+                        deferredPrompt = null;
+                        btnInstall.classList.remove('pulse');
+                    } else {
+                        // 브라우저에서 직접 프롬프트를 띄우지 못하는 경우 안내 모달 표시
+                        modal.classList.remove('hidden');
+                    }
+                });
+            }
+
+            // 설치 완료 감지
+            window.addEventListener('appinstalled', function() {
+                console.log('[PWA] 앱 설치 완료');
+                if (btnInstall) {
+                    btnInstall.innerHTML = '<span class="install-icon">✅</span><span class="install-text">설치 완료</span>';
+                    btnInstall.classList.remove('pulse');
+                    btnInstall.disabled = true;
+                }
+            });
+        })();
+    </script>
 </body>
 </html>
