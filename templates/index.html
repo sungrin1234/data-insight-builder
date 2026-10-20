@@ -6,7 +6,7 @@
     <title>AI Data Insight Builder</title>
     <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="/static/style.css?v=9">
+    <link rel="stylesheet" href="/static/style.css?v=10">
 
     <!-- PWA 설정 (Progressive Web App) -->
     <link rel="manifest" href="/manifest.json">
@@ -19,6 +19,277 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/icon-32x32.png">
 </head>
 <body>
+    <!-- 🏙️ Cyberpunk Metropolis Skyline & Flickering Neon Signs Background -->
+    <div class="cyber-city-container" id="cyberCityContainer" aria-hidden="true">
+        <!-- 1. Ambient Sky Gradient & Horizon Smog -->
+        <div class="cyber-sky-gradient"></div>
+        <div class="cyber-horizon-glow"></div>
+
+        <!-- 2. Sweeping Volumetric Cyber Searchlights -->
+        <div class="cyber-searchlight searchlight-left"></div>
+        <div class="cyber-searchlight searchlight-right"></div>
+
+        <!-- 3. Multi-depth Cyberpunk Megacity Skyline SVG -->
+        <svg class="cyber-skyline-svg" viewBox="0 0 1920 600" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <linearGradient id="towerGradFar" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#090e1f"/>
+                    <stop offset="100%" stop-color="#04060e"/>
+                </linearGradient>
+                <linearGradient id="towerGradMid" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#121d3b"/>
+                    <stop offset="100%" stop-color="#060917"/>
+                </linearGradient>
+                <linearGradient id="towerGradNear" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#18274d"/>
+                    <stop offset="100%" stop-color="#070b1a"/>
+                </linearGradient>
+                <pattern id="cyanGrid" width="16" height="24" patternUnits="userSpaceOnUse">
+                    <rect x="2" y="2" width="4" height="6" fill="rgba(0, 240, 255, 0.65)"/>
+                    <rect x="10" y="2" width="4" height="6" fill="rgba(0, 240, 255, 0.15)"/>
+                    <rect x="2" y="14" width="4" height="6" fill="rgba(0, 240, 255, 0.25)"/>
+                    <rect x="10" y="14" width="4" height="6" fill="rgba(0, 240, 255, 0.75)"/>
+                </pattern>
+                <pattern id="yellowGrid" width="18" height="26" patternUnits="userSpaceOnUse">
+                    <rect x="3" y="3" width="5" height="7" fill="rgba(252, 238, 10, 0.7)"/>
+                    <rect x="11" y="3" width="5" height="7" fill="rgba(252, 238, 10, 0.2)"/>
+                    <rect x="3" y="15" width="5" height="7" fill="rgba(252, 238, 10, 0.12)"/>
+                    <rect x="11" y="15" width="5" height="7" fill="rgba(252, 238, 10, 0.65)"/>
+                </pattern>
+                <pattern id="pinkGrid" width="14" height="22" patternUnits="userSpaceOnUse">
+                    <rect x="2" y="2" width="4" height="5" fill="rgba(255, 0, 127, 0.65)"/>
+                    <rect x="8" y="2" width="4" height="5" fill="rgba(255, 0, 127, 0.15)"/>
+                    <rect x="2" y="12" width="4" height="5" fill="rgba(255, 0, 127, 0.75)"/>
+                    <rect x="8" y="12" width="4" height="5" fill="rgba(255, 0, 127, 0.25)"/>
+                </pattern>
+            </defs>
+
+            <!-- Layer 1: Far Distance Silhouettes & Antennas -->
+            <rect x="40" y="170" width="130" height="430" fill="url(#towerGradFar)"/>
+            <line x1="105" y1="170" x2="105" y2="75" stroke="#1e293b" stroke-width="2"/>
+            <circle cx="105" cy="75" r="3.5" fill="#ff0055" class="beacon-red"/>
+
+            <rect x="210" y="140" width="160" height="460" fill="url(#towerGradFar)"/>
+            <line x1="290" y1="140" x2="290" y2="45" stroke="#1e293b" stroke-width="2.5"/>
+            <circle cx="290" cy="45" r="4" fill="#ff0055" class="beacon-red"/>
+
+            <rect x="410" y="180" width="150" height="420" fill="url(#towerGradFar)"/>
+            <line x1="485" y1="180" x2="485" y2="90" stroke="#1e293b" stroke-width="2"/>
+            <circle cx="485" cy="90" r="3.5" fill="#00f0ff" class="beacon-cyan"/>
+
+            <rect x="630" y="150" width="140" height="450" fill="url(#towerGradFar)"/>
+            <line x1="700" y1="150" x2="700" y2="60" stroke="#1e293b" stroke-width="2"/>
+            <circle cx="700" cy="60" r="3.5" fill="#ff0055" class="beacon-red"/>
+
+            <!-- High Pinnacle Telecom Spire Center -->
+            <polygon points="960,30 945,160 975,160" fill="#1e293b"/>
+            <circle cx="960" cy="25" r="4.5" fill="#ff0055" class="beacon-red"/>
+            <circle cx="952" cy="70" r="2.5" fill="#00f0ff" class="beacon-cyan"/>
+            <circle cx="968" cy="70" r="2.5" fill="#00f0ff" class="beacon-cyan"/>
+            <rect x="850" y="160" width="220" height="440" fill="url(#towerGradFar)"/>
+
+            <rect x="1110" y="160" width="160" height="440" fill="url(#towerGradFar)"/>
+            <line x1="1190" y1="160" x2="1190" y2="70" stroke="#1e293b" stroke-width="2"/>
+            <circle cx="1190" cy="70" r="3.5" fill="#00f0ff" class="beacon-cyan"/>
+
+            <rect x="1320" y="140" width="170" height="460" fill="url(#towerGradFar)"/>
+            <line x1="1405" y1="140" x2="1405" y2="50" stroke="#1e293b" stroke-width="2"/>
+            <circle cx="1405" cy="50" r="4" fill="#ff0055" class="beacon-red"/>
+
+            <rect x="1540" y="170" width="150" height="430" fill="url(#towerGradFar)"/>
+            <line x1="1615" y1="170" x2="1615" y2="80" stroke="#1e293b" stroke-width="2"/>
+            <circle cx="1615" cy="80" r="3.5" fill="#ff0055" class="beacon-red"/>
+
+            <rect x="1740" y="150" width="150" height="450" fill="url(#towerGradFar)"/>
+            <line x1="1815" y1="150" x2="1815" y2="65" stroke="#1e293b" stroke-width="2"/>
+            <circle cx="1815" cy="65" r="3.5" fill="#00f0ff" class="beacon-cyan"/>
+
+            <!-- Suspension Cable Network Curves -->
+            <path d="M 105,170 Q 200,260 290,200" fill="none" stroke="rgba(0, 240, 255, 0.25)" stroke-width="1.5"/>
+            <path d="M 290,200 Q 380,270 485,220" fill="none" stroke="rgba(255, 0, 127, 0.25)" stroke-width="1.5"/>
+            <path d="M 700,210 Q 820,310 960,200" fill="none" stroke="rgba(0, 240, 255, 0.3)" stroke-width="1.5"/>
+            <path d="M 960,200 Q 1070,300 1190,220" fill="none" stroke="rgba(255, 0, 127, 0.25)" stroke-width="1.5"/>
+            <path d="M 1405,200 Q 1510,290 1615,220" fill="none" stroke="rgba(0, 240, 255, 0.25)" stroke-width="1.5"/>
+
+            <!-- Layer 2: Midground Megastructures with Living Window Matrices -->
+            <rect x="0" y="230" width="180" height="370" fill="url(#towerGradMid)" stroke="rgba(0,240,255,0.2)" stroke-width="1"/>
+            <rect x="20" y="260" width="140" height="340" fill="url(#cyanGrid)"/>
+            <line x1="180" y1="230" x2="180" y2="600" stroke="#00f0ff" stroke-width="2.5" opacity="0.85"/>
+
+            <polygon points="210,240 310,165 410,240 410,600 210,600" fill="url(#towerGradMid)" stroke="rgba(255,0,127,0.25)" stroke-width="1"/>
+            <rect x="235" y="260" width="150" height="340" fill="url(#yellowGrid)"/>
+            <line x1="310" y1="165" x2="310" y2="600" stroke="#ff007f" stroke-width="2.5" opacity="0.9"/>
+
+            <!-- Skybridge 1 -->
+            <rect x="410" y="340" width="50" height="18" fill="#141f3d" stroke="#00f0ff" stroke-width="1.2"/>
+            <line x1="410" y1="349" x2="460" y2="349" stroke="#00ff9d" stroke-width="1.5"/>
+
+            <!-- Tower M3 (Helipad Skyscraper) -->
+            <rect x="460" y="240" width="200" height="360" fill="url(#towerGradMid)" stroke="rgba(0,240,255,0.2)" stroke-width="1"/>
+            <ellipse cx="560" cy="245" rx="35" ry="8" fill="none" stroke="#fcee0a" stroke-width="2" opacity="0.85"/>
+            <rect x="480" y="270" width="160" height="330" fill="url(#pinkGrid)"/>
+
+            <!-- Tower M4 (Central High-Tech Complex) -->
+            <rect x="710" y="195" width="240" height="405" fill="url(#towerGradMid)" stroke="rgba(0,240,255,0.3)" stroke-width="1.2"/>
+            <line x1="710" y1="195" x2="950" y2="435" stroke="rgba(0,240,255,0.35)" stroke-width="2"/>
+            <line x1="950" y1="195" x2="710" y2="435" stroke="rgba(0,240,255,0.35)" stroke-width="2"/>
+            <rect x="730" y="225" width="200" height="375" fill="url(#cyanGrid)"/>
+            <line x1="830" y1="195" x2="830" y2="600" stroke="#00f0ff" stroke-width="2" opacity="0.75"/>
+
+            <!-- Skybridge 2 -->
+            <rect x="950" y="330" width="40" height="20" fill="#141f3d" stroke="#ff007f" stroke-width="1.2"/>
+            <line x1="950" y1="340" x2="990" y2="340" stroke="#ff007f" stroke-width="1.5"/>
+
+            <!-- Tower M5 (Right Central) -->
+            <rect x="990" y="220" width="210" height="380" fill="url(#towerGradMid)" stroke="rgba(255,0,127,0.25)" stroke-width="1"/>
+            <rect x="1015" y="250" width="160" height="350" fill="url(#yellowGrid)"/>
+            <line x1="1200" y1="220" x2="1200" y2="600" stroke="#ff007f" stroke-width="2.5" opacity="0.85"/>
+
+            <!-- Tower M6 -->
+            <polygon points="1240,230 1360,170 1480,230 1480,600 1240,600" fill="url(#towerGradMid)" stroke="rgba(0,240,255,0.25)" stroke-width="1"/>
+            <rect x="1270" y="250" width="180" height="350" fill="url(#cyanGrid)"/>
+            <line x1="1360" y1="170" x2="1360" y2="600" stroke="#00f0ff" stroke-width="2.5" opacity="0.9"/>
+
+            <!-- Tower M7 -->
+            <rect x="1515" y="240" width="190" height="360" fill="url(#towerGradMid)" stroke="rgba(255,0,127,0.2)" stroke-width="1"/>
+            <rect x="1535" y="270" width="150" height="330" fill="url(#pinkGrid)"/>
+            <line x1="1515" y1="240" x2="1515" y2="600" stroke="#00ff9d" stroke-width="2" opacity="0.8"/>
+
+            <!-- Tower M8 (Far Right) -->
+            <rect x="1730" y="210" width="190" height="390" fill="url(#towerGradMid)" stroke="rgba(0,240,255,0.2)" stroke-width="1"/>
+            <rect x="1750" y="240" width="150" height="360" fill="url(#cyanGrid)"/>
+
+            <!-- Layer 3: Elevated Monorail Transit Highway Beam -->
+            <line x1="0" y1="520" x2="1920" y2="520" stroke="rgba(0, 240, 255, 0.55)" stroke-width="3"/>
+            <line x1="0" y1="524" x2="1920" y2="524" stroke="rgba(0, 240, 255, 0.2)" stroke-width="1.5"/>
+            <!-- Monorail Support Pillars -->
+            <rect x="150" y="524" width="12" height="76" fill="#090e1f"/>
+            <rect x="450" y="524" width="12" height="76" fill="#090e1f"/>
+            <rect x="780" y="524" width="12" height="76" fill="#090e1f"/>
+            <rect x="1150" y="524" width="12" height="76" fill="#090e1f"/>
+            <rect x="1480" y="524" width="12" height="76" fill="#090e1f"/>
+            <rect x="1800" y="524" width="12" height="76" fill="#090e1f"/>
+        </svg>
+
+        <!-- 4. Authentically Flickering Neon Signs on Buildings -->
+        <div class="cyber-neon-sign sign-left-1">
+            <div class="neon-kanji flicker-cyan">データ分析</div>
+            <div class="neon-sub flicker-fast">CYBER // 2077</div>
+        </div>
+
+        <div class="cyber-neon-sign sign-right-1">
+            <div class="neon-title flicker-pink">⬡ NEURAL CORE</div>
+            <div class="neon-sub flicker-slow">AI INSIGHT LABS</div>
+        </div>
+
+        <div class="cyber-neon-sign sign-left-2">
+            <span class="neon-badge flicker-yellow">⚡ OVERDRIVE</span>
+        </div>
+
+        <div class="cyber-neon-sign sign-right-2">
+            <div class="billboard-text flicker-cyan">QUANTUM MATRIX</div>
+            <div class="billboard-eq">
+                <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+            </div>
+        </div>
+
+        <!-- 5. Flying Sky Traffic Laser Streams -->
+        <div class="cyber-traffic-line traffic-stream-1"></div>
+        <div class="cyber-traffic-line traffic-stream-2"></div>
+
+        <!-- 6. Floating Cyber Dust & Digital Rain Particles Canvas -->
+        <canvas id="cyberCityAtmosphere" class="cyber-atmosphere-canvas"></canvas>
+
+        <!-- 7. Center Readability Scrim (Ensures cards and text stay 100% crystal clear) -->
+        <div class="cyber-city-scrim"></div>
+    </div>
+
+    <script>
+        // 🌧️ Cyber Atmosphere Rain & Dust Motes Canvas Engine
+        (function() {
+            const canvas = document.getElementById('cyberCityAtmosphere');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            let animId = null;
+            let w, h;
+            let particles = [];
+
+            function resize() {
+                w = canvas.width = window.innerWidth;
+                h = canvas.height = window.innerHeight;
+            }
+            resize();
+            window.addEventListener('resize', resize);
+
+            const colors = ['#00f0ff', '#ff007f', '#00ff9d', '#ffffff', '#fcee0a'];
+
+            // 40 gentle cyber rain streaks + 25 floating cyber dust motes
+            for (let i = 0; i < 65; i++) {
+                const isRain = i < 40;
+                particles.push({
+                    isRain: isRain,
+                    x: Math.random() * w,
+                    y: Math.random() * h,
+                    length: isRain ? 16 + Math.random() * 32 : 0,
+                    speedY: isRain ? 5.5 + Math.random() * 8 : -0.3 - Math.random() * 0.6,
+                    speedX: isRain ? -1 - Math.random() * 1.5 : (Math.random() - 0.5) * 0.6,
+                    size: isRain ? 1.2 : 1.5 + Math.random() * 2,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    alpha: 0.2 + Math.random() * 0.6,
+                    fadeSpeed: 0.006 + Math.random() * 0.012,
+                    fadeDir: Math.random() > 0.5 ? 1 : -1
+                });
+            }
+
+            function loop() {
+                ctx.clearRect(0, 0, w, h);
+
+                particles.forEach(p => {
+                    p.x += p.speedX;
+                    p.y += p.speedY;
+
+                    p.alpha += p.fadeSpeed * p.fadeDir;
+                    if (p.alpha >= 0.75) p.fadeDir = -1;
+                    if (p.alpha <= 0.15) p.fadeDir = 1;
+
+                    if (p.isRain) {
+                        if (p.y > h + 40 || p.x < -30) {
+                            p.y = -30;
+                            p.x = Math.random() * (w + 120);
+                        }
+                        ctx.save();
+                        ctx.beginPath();
+                        ctx.moveTo(p.x, p.y);
+                        ctx.lineTo(p.x + p.speedX * 2, p.y + p.length);
+                        ctx.strokeStyle = p.color;
+                        ctx.lineWidth = p.size;
+                        ctx.globalAlpha = Math.max(0, p.alpha * 0.65);
+                        ctx.stroke();
+                        ctx.restore();
+                    } else {
+                        if (p.y < -20) {
+                            p.y = h + 20;
+                            p.x = Math.random() * w;
+                        }
+                        ctx.save();
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                        ctx.fillStyle = p.color;
+                        ctx.globalAlpha = Math.max(0, p.alpha);
+                        ctx.shadowBlur = 8;
+                        ctx.shadowColor = p.color;
+                        ctx.fill();
+                        ctx.restore();
+                    }
+                });
+
+                animId = requestAnimationFrame(loop);
+            }
+
+            animId = requestAnimationFrame(loop);
+        })();
+    </script>
+
     <!-- 사이트 비밀번호 잠금화면 오버레이 (비밀번호: 7890) -->
     <div id="authLockOverlay" class="auth-lock-overlay">
         <!-- 🎆 웅장한 잠금해제 캔버스 이펙트 (네온 파티클 폭발, EMP 충격파 링) -->

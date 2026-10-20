@@ -60,24 +60,13 @@
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    background-color: var(--bg-main);
-    background-image: 
-        radial-gradient(circle at 10% 15%, rgba(0, 240, 255, 0.08) 0%, transparent 40%),
-        radial-gradient(circle at 90% 25%, rgba(255, 0, 127, 0.07) 0%, transparent 45%),
-        linear-gradient(rgba(0, 240, 255, 0.025) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 240, 255, 0.025) 1px, transparent 1px);
-    background-size: 100% 100%, 100% 100%, 36px 36px, 36px 36px;
-    animation: cyberGridDrift 60s linear infinite;
-    background-attachment: fixed;
+    background-color: #04060d;
     color: var(--text-main);
     line-height: 1.6;
     padding-bottom: 60px;
     min-height: 100vh;
-}
-
-@keyframes cyberGridDrift {
-    0% { background-position: 0 0, 0 0, 0 0, 0 0; }
-    100% { background-position: 0 0, 0 0, 36px 36px, 36px 36px; }
+    position: relative;
+    overflow-x: hidden;
 }
 
 
@@ -152,6 +141,7 @@ button:active,
     color: #ffffff;
     padding: 22px 20px;
     position: relative;
+    z-index: 20;
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
 }
@@ -360,6 +350,8 @@ button:active,
     display: flex;
     flex-direction: column;
     gap: 26px;
+    position: relative;
+    z-index: 10;
 }
 
 /* Notice Banner */
@@ -1740,4 +1732,428 @@ body.autumn-mode .chat-bubble.user {
 body.autumn-mode .btn-primary {
     background: linear-gradient(135deg, #f97316 0%, #ea580c 60%, #b91c1c 100%);
     color: #ffffff;
+}
+
+/* ==========================================================================
+ * 🏙️ Cyberpunk Metropolis Skyline & Flickering Neon Signs Engine
+ * ========================================================================== */
+.cyber-city-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none !important;
+    z-index: 0;
+    overflow: hidden;
+    user-select: none;
+    transition: opacity 0.5s ease, filter 0.5s ease;
+}
+
+body.autumn-mode .cyber-city-container {
+    filter: hue-rotate(315deg) saturate(1.2) brightness(0.85);
+    opacity: 0.5;
+}
+
+/* Deep Cyber Night Sky & Horizon Neon Smog */
+.cyber-sky-gradient {
+    position: absolute;
+    inset: 0;
+    background: 
+        radial-gradient(circle at 50% 15%, #0e1430 0%, #080c1e 45%, #04060e 100%),
+        linear-gradient(rgba(0, 240, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 240, 255, 0.02) 1px, transparent 1px);
+    background-size: 100% 100%, 40px 40px, 40px 40px;
+    z-index: 1;
+}
+
+.cyber-horizon-glow {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 55vh;
+    background: 
+        radial-gradient(circle at 18% 90%, rgba(0, 240, 255, 0.22) 0%, transparent 55%),
+        radial-gradient(circle at 82% 85%, rgba(255, 0, 127, 0.2) 0%, transparent 55%),
+        radial-gradient(circle at 50% 95%, rgba(168, 85, 247, 0.16) 0%, transparent 60%);
+    z-index: 2;
+    pointer-events: none;
+    animation: horizonPulse 8s ease-in-out infinite alternate;
+}
+
+@keyframes horizonPulse {
+    0% { opacity: 0.75; transform: scaleY(0.95); }
+    100% { opacity: 1; transform: scaleY(1.05); }
+}
+
+/* 🔦 Volumetric Cyber Searchlight Beams */
+.cyber-searchlight {
+    position: absolute;
+    bottom: -60px;
+    width: 260px;
+    height: 120vh;
+    background: linear-gradient(0deg, rgba(0, 240, 255, 0.25) 0%, rgba(0, 240, 255, 0.04) 65%, transparent 100%);
+    clip-path: polygon(46% 100%, 54% 100%, 95% 0%, 5% 0%);
+    filter: blur(14px);
+    z-index: 2;
+    transform-origin: 50% 100%;
+    pointer-events: none;
+}
+
+.searchlight-left {
+    left: 14%;
+    animation: sweepSearchlightLeft 16s ease-in-out infinite alternate;
+}
+
+.searchlight-right {
+    right: 16%;
+    background: linear-gradient(0deg, rgba(255, 0, 127, 0.22) 0%, rgba(255, 0, 127, 0.04) 65%, transparent 100%);
+    animation: sweepSearchlightRight 18s ease-in-out infinite alternate;
+}
+
+@keyframes sweepSearchlightLeft {
+    0% { transform: rotate(-28deg); opacity: 0.55; }
+    50% { transform: rotate(12deg); opacity: 0.9; }
+    100% { transform: rotate(-18deg); opacity: 0.65; }
+}
+
+@keyframes sweepSearchlightRight {
+    0% { transform: rotate(26deg); opacity: 0.6; }
+    50% { transform: rotate(-14deg); opacity: 0.85; }
+    100% { transform: rotate(20deg); opacity: 0.5; }
+}
+
+/* 🏙️ Multi-layered SVG Megacity Skyline */
+.cyber-skyline-svg {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100vw;
+    height: 62vh;
+    min-height: 400px;
+    z-index: 3;
+    pointer-events: none;
+    opacity: 0.95;
+}
+
+/* 🔴 Beacon Warning Lights on Tower Antennas */
+.beacon-red {
+    animation: beaconFlash 1.6s steps(1) infinite;
+}
+
+.beacon-cyan {
+    animation: beaconFlash 1.2s steps(1) 0.6s infinite;
+}
+
+@keyframes beaconFlash {
+    0%, 100% { opacity: 1; filter: drop-shadow(0 0 6px #ff0055); }
+    50% { opacity: 0.15; filter: none; }
+}
+
+/* ⚡ Cyber Traffic Laser Flying Streams */
+.cyber-traffic-line {
+    position: absolute;
+    height: 2px;
+    z-index: 4;
+    border-radius: 2px;
+    pointer-events: none;
+}
+
+.traffic-stream-1 {
+    bottom: 22vh;
+    left: -200px;
+    width: 180px;
+    background: linear-gradient(90deg, transparent, #00f0ff 70%, #ffffff 100%);
+    box-shadow: 0 0 12px #00f0ff;
+    animation: trafficFlyRight 9s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.traffic-stream-2 {
+    bottom: 29vh;
+    right: -200px;
+    width: 150px;
+    background: linear-gradient(270deg, transparent, #ff007f 70%, #ffffff 100%);
+    box-shadow: 0 0 12px #ff007f;
+    animation: trafficFlyLeft 12s cubic-bezier(0.4, 0, 0.2, 1) 3s infinite;
+}
+
+@keyframes trafficFlyRight {
+    0% { transform: translateX(0); opacity: 0; }
+    15% { opacity: 1; }
+    85% { opacity: 1; }
+    100% { transform: translateX(calc(100vw + 400px)); opacity: 0; }
+}
+
+@keyframes trafficFlyLeft {
+    0% { transform: translateX(0); opacity: 0; }
+    15% { opacity: 1; }
+    85% { opacity: 1; }
+    100% { transform: translateX(calc(-100vw - 400px)); opacity: 0; }
+}
+
+/* ==========================================================================
+ * 🏮 Authentic Flickering Neon Signs & Holographic Billboards
+ * ========================================================================== */
+.cyber-neon-sign {
+    position: absolute;
+    z-index: 5;
+    pointer-events: none;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+/* Sign 1: Top Left - Cyber Japanese Analytics */
+.sign-left-1 {
+    top: 90px;
+    left: 28px;
+    border: 1px solid rgba(0, 240, 255, 0.45);
+    background: rgba(6, 12, 24, 0.75);
+    padding: 8px 14px;
+    border-radius: 8px;
+    box-shadow: 0 0 18px rgba(0, 240, 255, 0.35), inset 0 0 12px rgba(0, 240, 255, 0.15);
+    backdrop-filter: blur(8px);
+}
+
+.sign-left-1 .neon-kanji {
+    font-size: 1.15rem;
+    font-weight: 900;
+    color: #ffffff;
+    text-shadow: 
+        0 0 5px #fff,
+        0 0 10px #00f0ff,
+        0 0 20px #00f0ff,
+        0 0 35px #00f0ff,
+        0 0 55px #0284c7;
+}
+
+.sign-left-1 .neon-sub {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: #ff007f;
+    letter-spacing: 2.5px;
+    margin-top: 3px;
+    text-shadow: 0 0 6px #ff007f, 0 0 14px #ff007f;
+}
+
+/* Sign 2: Top Right - Neural Core Labs */
+.sign-right-1 {
+    top: 95px;
+    right: 28px;
+    border: 1px solid rgba(255, 0, 127, 0.45);
+    background: rgba(18, 6, 22, 0.75);
+    padding: 8px 14px;
+    border-radius: 8px;
+    box-shadow: 0 0 18px rgba(255, 0, 127, 0.35), inset 0 0 12px rgba(255, 0, 127, 0.15);
+    text-align: right;
+    backdrop-filter: blur(8px);
+}
+
+.sign-right-1 .neon-title {
+    font-size: 1.05rem;
+    font-weight: 900;
+    color: #ffffff;
+    text-shadow: 
+        0 0 5px #fff,
+        0 0 10px #ff007f,
+        0 0 20px #ff007f,
+        0 0 38px #ff007f;
+}
+
+.sign-right-1 .neon-sub {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: #00f0ff;
+    letter-spacing: 2.5px;
+    margin-top: 3px;
+    text-shadow: 0 0 6px #00f0ff, 0 0 14px #00f0ff;
+}
+
+/* Sign 3: Mid Left - Electric Overdrive Sign */
+.sign-left-2 {
+    top: 48%;
+    left: 20px;
+    display: block;
+}
+
+.sign-left-2 .neon-badge {
+    display: inline-block;
+    padding: 6px 12px;
+    border: 1px solid rgba(252, 238, 10, 0.55);
+    background: rgba(18, 16, 4, 0.75);
+    border-radius: 6px;
+    color: #fff;
+    font-size: 0.82rem;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    text-shadow: 
+        0 0 5px #fff,
+        0 0 10px #fcee0a,
+        0 0 20px #fcee0a,
+        0 0 35px #fcee0a;
+    box-shadow: 0 0 16px rgba(252, 238, 10, 0.35);
+    backdrop-filter: blur(6px);
+}
+
+/* Sign 4: Mid Right - Holographic Equalizer Billboard */
+.sign-right-2 {
+    top: 50%;
+    right: 20px;
+    border: 1px solid rgba(0, 240, 255, 0.4);
+    background: rgba(6, 12, 24, 0.75);
+    padding: 9px 14px;
+    border-radius: 8px;
+    box-shadow: 0 0 18px rgba(0, 240, 255, 0.3);
+    text-align: center;
+    backdrop-filter: blur(8px);
+}
+
+.sign-right-2 .billboard-text {
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: #ffffff;
+    text-shadow: 0 0 8px #00f0ff, 0 0 18px #00f0ff;
+    margin-bottom: 6px;
+    letter-spacing: 1.8px;
+}
+
+.sign-right-2 .billboard-eq {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 3px;
+    height: 18px;
+}
+
+.sign-right-2 .billboard-eq span {
+    width: 4px;
+    background: linear-gradient(0deg, #00f0ff 0%, #ff007f 100%);
+    border-radius: 2px;
+    box-shadow: 0 0 6px #00f0ff;
+    animation: eqBounce 1.4s ease-in-out infinite alternate;
+}
+
+.sign-right-2 .billboard-eq span:nth-child(1) { height: 40%; animation-delay: 0.1s; }
+.sign-right-2 .billboard-eq span:nth-child(2) { height: 80%; animation-delay: 0.35s; }
+.sign-right-2 .billboard-eq span:nth-child(3) { height: 55%; animation-delay: 0.2s; }
+.sign-right-2 .billboard-eq span:nth-child(4) { height: 95%; animation-delay: 0.5s; }
+.sign-right-2 .billboard-eq span:nth-child(5) { height: 70%; animation-delay: 0.25s; }
+.sign-right-2 .billboard-eq span:nth-child(6) { height: 45%; animation-delay: 0.4s; }
+.sign-right-2 .billboard-eq span:nth-child(7) { height: 85%; animation-delay: 0.15s; }
+
+@keyframes eqBounce {
+    0% { transform: scaleY(0.25); }
+    100% { transform: scaleY(1); }
+}
+
+/* ⚡ Realistic High-Voltage Neon Tube Flicker Keyframes */
+.flicker-cyan {
+    animation: neonFlickerCyan 6s infinite;
+}
+
+@keyframes neonFlickerCyan {
+    0%, 19.999%, 22%, 62.999%, 64%, 64.999%, 70%, 100% {
+        opacity: 0.98;
+        filter: brightness(1.05);
+    }
+    20%, 21.999%, 63%, 63.999%, 65%, 69.999% {
+        opacity: 0.35;
+        filter: brightness(0.6);
+        text-shadow: none;
+    }
+}
+
+.flicker-pink {
+    animation: neonFlickerPink 7.5s infinite;
+}
+
+@keyframes neonFlickerPink {
+    0%, 34.999%, 36%, 79.999%, 81%, 82.999%, 85%, 100% {
+        opacity: 1;
+        filter: brightness(1.08);
+    }
+    35%, 35.999%, 80%, 80.999%, 83%, 84.999% {
+        opacity: 0.4;
+        filter: brightness(0.7);
+        text-shadow: none;
+    }
+}
+
+.flicker-yellow {
+    animation: neonFlickerYellow 4.5s infinite;
+}
+
+@keyframes neonFlickerYellow {
+    0%, 49.999%, 51%, 89.999%, 91%, 100% {
+        opacity: 0.95;
+    }
+    50%, 50.999%, 90%, 90.999% {
+        opacity: 0.3;
+        box-shadow: none;
+        text-shadow: none;
+    }
+}
+
+.flicker-fast {
+    animation: neonGlitchFast 3.2s infinite;
+}
+
+@keyframes neonGlitchFast {
+    0%, 100% { opacity: 0.9; }
+    50% { opacity: 0.95; }
+    52% { opacity: 0.2; }
+    54% { opacity: 0.95; }
+    88% { opacity: 0.35; }
+    90% { opacity: 0.9; }
+}
+
+.flicker-slow {
+    animation: neonBreathe 4s ease-in-out infinite alternate;
+}
+
+@keyframes neonBreathe {
+    0% { opacity: 0.75; filter: brightness(0.9); }
+    100% { opacity: 1; filter: brightness(1.2); }
+}
+
+/* 🌧️ Cyber Atmosphere Rain & Dust Canvas */
+.cyber-atmosphere-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 6;
+    pointer-events: none;
+    opacity: 0.8;
+}
+
+/* 🛡️ Center Readability Scrim (Soft dark vignette preserving card clarity) */
+.cyber-city-scrim {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 45%, rgba(4, 6, 13, 0.4) 0%, rgba(4, 6, 13, 0.88) 100%);
+    z-index: 7;
+    pointer-events: none;
+}
+
+/* Mobile & Tablet Optimizations */
+@media (max-width: 900px) {
+    .cyber-neon-sign.sign-left-2,
+    .cyber-neon-sign.sign-right-2 {
+        display: none;
+    }
+    .sign-left-1 {
+        left: 10px;
+        top: 75px;
+        padding: 5px 8px;
+    }
+    .sign-right-1 {
+        right: 10px;
+        top: 75px;
+        padding: 5px 8px;
+    }
+    .cyber-skyline-svg {
+        height: 48vh;
+    }
 }
